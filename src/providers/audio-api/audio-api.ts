@@ -44,4 +44,9 @@ export class AudioApiProvider {
         return files;
       });
   }
+
+  public setPlaylist(playlist: AudioPlaylist): void {
+    this.http
+      .post(`${this.audioApiUrl}/SetPlaylist`, playlist);
+  }
 }

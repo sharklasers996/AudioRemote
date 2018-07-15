@@ -1,3 +1,8 @@
 <ion-content>
-    <h1>playlists</h1>
+    <ion-list no-lines>
+        <button ion-item color="background" [ngClass]="{ 'current-playlist' : playlist.name == currentPlaylist?.name }" *ngFor="let playlist of playlists"
+            (click)="playlistClicked(playlist)">
+            {{ playlist.name }}
+        </button>
+    </ion-list>
 </ion-content>
