@@ -7,7 +7,7 @@ import { AudioPlayerInfo } from '../../models/audio-player-info';
 
 @Injectable()
 export class AudioApiProvider {
-  private playerInfoTrackerApiUrl: string = '/api/PlayerInfoTrackerApi/';
+  private playerInfoTrackerApiUrl: string = '/api/PlayerInfoTrackerApi';
   private audioApiUrl: string = '/api/AudioApi';
 
   constructor(public http: HttpClientWithLoader) { }

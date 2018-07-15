@@ -12,6 +12,8 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { SettingsApiProvider } from '../providers/settings-api/settings-api';
 import { AudioApiProvider } from '../providers/audio-api/audio-api';
+import { HttpClientModule } from '@angular/common/http';
+import { HttpClientWithLoader } from '../utils/http-client-with-loader';
 
 
 @NgModule({
@@ -24,6 +26,7 @@ import { AudioApiProvider } from '../providers/audio-api/audio-api';
   ],
   imports: [
     BrowserModule,
+    HttpClientModule,
     IonicModule.forRoot(AppComponent)
   ],
   bootstrap: [IonicApp],
@@ -38,6 +41,7 @@ import { AudioApiProvider } from '../providers/audio-api/audio-api';
     StatusBar,
     SplashScreen,
     { provide: ErrorHandler, useClass: IonicErrorHandler },
+    HttpClientWithLoader,
     SettingsApiProvider,
     AudioApiProvider
   ]
