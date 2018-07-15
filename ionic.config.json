@@ -1,0 +1,8 @@
+{
+  "name": "AudioRemote",
+  "app_id": "",
+  "type": "ionic-angular",
+  "integrations": {
+    "cordova": {}
+  }
+}
