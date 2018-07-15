@@ -2,13 +2,13 @@ import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { AudioApiProvider } from '../../providers/audio-api/audio-api';
 import { SettingsApiProvider } from '../../providers/settings-api/settings-api';
-import { SettingsKey } from '../../Enums/settings-key.enum';
+import { SettingsKey } from '../../enums/settings-key.enum';
 import { AudioFile } from '../../models/audio-file';
 import { AudioDataChangeServiceProvider } from '../../providers/audio-data-change-service/audio-data-change-service';
 import { AudioPlaylist } from '../../models/audio-playlist';
 import { AudioPlayerInfo } from '../../models/audio-player-info';
 import { CommandQueueApiProvider } from '../../providers/command-queue-api/command-queue-api';
-import { Commands } from '../../Enums/commands.enum';
+import { Commands } from '../../enums/commands.enum';
 
 @Component({
     selector: 'page-player',

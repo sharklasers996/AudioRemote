@@ -3,7 +3,7 @@ import { NavController } from 'ionic-angular';
 import { AudioPlaylist } from '../../models/audio-playlist';
 import { AudioApiProvider } from '../../providers/audio-api/audio-api';
 import { SettingsApiProvider } from '../../providers/settings-api/settings-api';
-import { SettingsKey } from '../../Enums/settings-key.enum';
+import { SettingsKey } from '../../enums/settings-key.enum';
 import { AudioDataChangeServiceProvider } from '../../providers/audio-data-change-service/audio-data-change-service';
 
 @Component({
