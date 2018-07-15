@@ -7,6 +7,8 @@ import { AudioFile } from '../../models/audio-file';
 import { AudioDataChangeServiceProvider } from '../../providers/audio-data-change-service/audio-data-change-service';
 import { AudioPlaylist } from '../../models/audio-playlist';
 import { AudioPlayerInfo } from '../../models/audio-player-info';
+import { CommandQueueApiProvider } from '../../providers/command-queue-api/command-queue-api';
+import { Commands } from '../../Enums/commands.enum';
 
 @Component({
     selector: 'page-player',
@@ -21,7 +23,8 @@ export class PlayerPage {
         public navCtrl: NavController,
         private audioApi: AudioApiProvider,
         private settingsApi: SettingsApiProvider,
-        private audioDataChangeService: AudioDataChangeServiceProvider) { }
+        private audioDataChangeService: AudioDataChangeServiceProvider,
+        private commandQueueApi: CommandQueueApiProvider) { }
 
     ionViewDidLoad() {
         this.audioDataChangeService
@@ -49,5 +52,21 @@ export class PlayerPage {
             .then(files => {
                 this.playlistFiles = files;
             });
+    }
+
+    public playPause(): void {
+        this.commandQueueApi.addCommand(Commands.PlayPause, null);
+    }
+
+    public nextFile(): void {
+        this.commandQueueApi.addCommand(Commands.NextFile, null);
+    }
+
+    public previousFile(): void {
+        this.commandQueueApi.addCommand(Commands.PreviousFile, null);
+    }
+
+    public volumeSliderChange(event: any): void {
+        this.commandQueueApi.addCommand(Commands.ChangeVolume, event.ratio * 100);
     }
 }

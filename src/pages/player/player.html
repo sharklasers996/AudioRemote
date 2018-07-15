@@ -36,7 +36,7 @@
 </ion-content>
 
 <ion-footer>
-    <ion-range min="0" max="100" pin="true" color="grey" class="slider">
+    <ion-range min="0" max="100" pin="true" color="grey" pin="false" class="slider">
         <ion-icon range-left small name="volume-low"></ion-icon>
         <ion-icon range-right name="volume-high"></ion-icon>
     </ion-range>
@@ -60,18 +60,18 @@
                 </button>
             </ion-col>
             <ion-col col>
-                <button ion-button icon-only round>
+                <button (click)="previousFile()" ion-button icon-only round>
                     <ion-icon name="skip-backward"></ion-icon>
                 </button>
             </ion-col>
             <ion-col col-3>
-                <button ion-button icon-only round large class="btn-play">
+                <button (click)="playPause()" ion-button icon-only round large class="btn-play">
                     <ion-icon *ngIf="!playerInfo?.isPaused" name="pause"></ion-icon>
                     <ion-icon *ngIf="playerInfo?.isPaused" name="play"></ion-icon>
                 </button>
             </ion-col>
             <ion-col col>
-                <button ion-button icon-only round>
+                <button (click)="nextFile()" ion-button icon-only round>
                     <ion-icon name="skip-forward"></ion-icon>
                 </button>
             </ion-col>
@@ -88,7 +88,7 @@
 
 
 
-    <ion-range [(ngModel)]="playerInfo.volume" min="0" max="100" pin="true" color="primary" class="slider">
+    <ion-range [(ngModel)]="playerInfo.volume" min="0" max="100" pin="true" step="0.5" color="primary" class="slider" (ionChange)="volumeSliderChange($event)">
         <ion-icon range-left small name="volume-low"></ion-icon>
         <ion-icon range-right name="volume-high"></ion-icon>
     </ion-range>

@@ -9,4 +9,6 @@ export class AudioPlayerInfo {
     currentPositionString: string = '00:00';
     durationString: string = '00:00';
     isPaused: boolean;
+
+    constructor() { }
 }

@@ -15,37 +15,39 @@ import { AudioApiProvider } from '../providers/audio-api/audio-api';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpClientWithLoader } from '../utils/http-client-with-loader';
 import { AudioDataChangeServiceProvider } from '../providers/audio-data-change-service/audio-data-change-service';
+import { CommandQueueApiProvider } from '../providers/command-queue-api/command-queue-api';
 
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    PlayerPage,
-    PlaylistsPage,
-    BrowserPage,
-    TabsPage
-  ],
-  imports: [
-    BrowserModule,
-    HttpClientModule,
-    IonicModule.forRoot(AppComponent)
-  ],
-  bootstrap: [IonicApp],
-  entryComponents: [
-    AppComponent,
-    PlayerPage,
-    PlaylistsPage,
-    BrowserPage,
-    TabsPage
-  ],
-  providers: [
-    StatusBar,
-    SplashScreen,
-    { provide: ErrorHandler, useClass: IonicErrorHandler },
-    HttpClientWithLoader,
-    SettingsApiProvider,
-    AudioApiProvider,
-    AudioDataChangeServiceProvider
-  ]
+    declarations: [
+        AppComponent,
+        PlayerPage,
+        PlaylistsPage,
+        BrowserPage,
+        TabsPage
+    ],
+    imports: [
+        BrowserModule,
+        HttpClientModule,
+        IonicModule.forRoot(AppComponent)
+    ],
+    bootstrap: [IonicApp],
+    entryComponents: [
+        AppComponent,
+        PlayerPage,
+        PlaylistsPage,
+        BrowserPage,
+        TabsPage
+    ],
+    providers: [
+        StatusBar,
+        SplashScreen,
+        { provide: ErrorHandler, useClass: IonicErrorHandler },
+        HttpClientWithLoader,
+        SettingsApiProvider,
+        AudioApiProvider,
+        AudioDataChangeServiceProvider,
+        CommandQueueApiProvider
+    ]
 })
 export class AppModule { }
