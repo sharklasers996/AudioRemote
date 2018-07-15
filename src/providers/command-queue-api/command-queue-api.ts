@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClientWithLoader } from '../../utils/http-client-with-loader';
-import { Commands } from '../../Enums/commands.enum';
-import { CommandClient } from '../../Enums/command-client.enum';
+import { Commands } from '../../enums/commands.enum';
+import { CommandClient } from '../../enums/command-client.enum';
 
 @Injectable()
 export class CommandQueueApiProvider {
