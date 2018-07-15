@@ -1,3 +1,95 @@
-<ion-content>
-    <h1>player</h1>
+<ion-content padding>
+
+    <ion-list no-lines [virtualScroll]="playlistItems">
+        <ion-item-sliding *virtualItem="let item">
+            <ion-item color="background">
+
+                <ion-grid class="playlist-item">
+                    <ion-row>
+                        <ion-col col-sm-6 push-sm-6 col-xs-12>
+                            {{ item.title }}
+                        </ion-col>
+                        <ion-col col-sm-6 pull-sm-6 col-xs-12 text-right text-sm-left>
+                            <span class="artist">
+                                {{ item.artist }}
+                            </span>
+                        </ion-col>
+                    </ion-row>
+                </ion-grid>
+
+
+            </ion-item>
+            <ion-item-options side="right">
+                <button ion-button color="primary">
+                    <ion-icon name="ios-more"></ion-icon>
+                    More
+                </button>
+                <button ion-button color="danger">
+                    <ion-icon name="star"></ion-icon>
+                    Queue
+                </button>
+            </ion-item-options>
+        </ion-item-sliding>
+    </ion-list>
+
+
 </ion-content>
+
+<ion-footer>
+    <ion-range min="0" max="100" pin="true" color="grey" class="slider">
+        <ion-icon range-left small name="volume-low"></ion-icon>
+        <ion-icon range-right name="volume-high"></ion-icon>
+    </ion-range>
+
+    <ion-grid padding-left padding-right class="player-info-grid">
+        <ion-row>
+            <ion-col col-9>Artist</ion-col>
+            <ion-col col-3 text-right>00:00/00:00</ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col col-9>Track</ion-col>
+            <ion-col col-3 text-right>PlaylistName</ion-col>
+        </ion-row>
+    </ion-grid>
+
+    <ion-grid text-center class="player-btn-grid">
+        <ion-row class="player-btn-row">
+            <ion-col col>
+                <button ion-button icon-only round>
+                    <ion-icon name="shuffle"></ion-icon>
+                </button>
+            </ion-col>
+            <ion-col col>
+                <button ion-button icon-only round>
+                    <ion-icon name="skip-backward"></ion-icon>
+                </button>
+            </ion-col>
+            <ion-col col-3>
+                <button ion-button icon-only round large class="btn-play">
+                    <ion-icon name="pause"></ion-icon>
+                </button>
+            </ion-col>
+            <ion-col col>
+                <button ion-button icon-only round>
+                    <ion-icon name="skip-forward"></ion-icon>
+                </button>
+            </ion-col>
+            <ion-col col>
+                <button ion-button icon-only round>
+                    <ion-icon name="search"></ion-icon>
+                </button>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+
+
+
+
+
+
+    <ion-range min="0" max="100" pin="true" color="primary" class="slider">
+        <ion-icon range-left small name="volume-low"></ion-icon>
+        <ion-icon range-right name="volume-high"></ion-icon>
+    </ion-range>
+
+</ion-footer>

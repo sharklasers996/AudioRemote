@@ -1,0 +1,34 @@
+.slider {
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+}
+
+.player-btn-grid {
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+.player-btn-row {
+    align-items: center;
+    >ion-col {
+        >button {
+            height: 3.2em;
+            color: black;
+        }
+        .btn-play {
+            padding: 0.2em;
+        }
+    }
+}
+
+.player-info-grid {
+    color: color($colors, light);
+}
+
+.artist {
+    font-weight: bold;
+}
+
+.playlist-item {
+    padding: 0;
+}
