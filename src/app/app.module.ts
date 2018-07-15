@@ -14,6 +14,7 @@ import { SettingsApiProvider } from '../providers/settings-api/settings-api';
 import { AudioApiProvider } from '../providers/audio-api/audio-api';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpClientWithLoader } from '../utils/http-client-with-loader';
+import { AudioDataChangeServiceProvider } from '../providers/audio-data-change-service/audio-data-change-service';
 
 
 @NgModule({
@@ -43,7 +44,8 @@ import { HttpClientWithLoader } from '../utils/http-client-with-loader';
     { provide: ErrorHandler, useClass: IonicErrorHandler },
     HttpClientWithLoader,
     SettingsApiProvider,
-    AudioApiProvider
+    AudioApiProvider,
+    AudioDataChangeServiceProvider
   ]
 })
 export class AppModule { }

@@ -1,4 +1,4 @@
-export interface AudioPlayerInfo {
+export class AudioPlayerInfo {
     path: string;
     artist: string;
     track: string;
@@ -6,7 +6,7 @@ export interface AudioPlayerInfo {
     duration: number;
     volume: number;
     playingOrder: number;
-    currentPositionString: string;
-    durationString: string;
+    currentPositionString: string = '00:00';
+    durationString: string = '00:00';
     isPaused: boolean;
 }

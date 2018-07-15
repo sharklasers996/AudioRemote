@@ -8,9 +8,9 @@ export class SettingsApiProvider {
 
   constructor(public http: HttpClientWithLoader) { }
 
-  public getSettingValue(settingsKey: SettingsKey): Promise<string> {
+  public getSettingValue(settingsKey: SettingsKey): Promise<any> {
     return this.http
-      .post<string>(`${this.settingsApiUrl}/GetSettingValue`, settingsKey)
+      .post<any>(`${this.settingsApiUrl}/GetSettingValue`, settingsKey)
       .then(value => {
         return value;
       });
