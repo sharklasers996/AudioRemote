@@ -4,6 +4,8 @@ import { LoadingController, Loading } from "ionic-angular/umd";
 
 @Injectable()
 export class HttpClientWithLoader {
+    public static LoadingMessage: string = 'Loading';
+
     private loadingCtrl: LoadingController;
 
     constructor(private http: HttpClient) {

@@ -10,6 +10,8 @@ import { TabsPage } from '../pages/tabs/tabs';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
+import { SettingsApiProvider } from '../providers/settings-api/settings-api';
+import { AudioApiProvider } from '../providers/audio-api/audio-api';
 
 
 @NgModule({
@@ -35,7 +37,9 @@ import { SplashScreen } from '@ionic-native/splash-screen';
   providers: [
     StatusBar,
     SplashScreen,
-    { provide: ErrorHandler, useClass: IonicErrorHandler }
+    { provide: ErrorHandler, useClass: IonicErrorHandler },
+    SettingsApiProvider,
+    AudioApiProvider
   ]
 })
 export class AppModule { }
