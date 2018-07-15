@@ -24,6 +24,11 @@ export class AudioApiProvider {
       });
   }
 
+  public updateAudioPlayerInfo(playerInfo: AudioPlayerInfo): void {
+    this.http
+      .post(`${this.playerInfoTrackerApiUrl}/UpdateAudioPlayerInfo`, playerInfo);
+  }
+
   public getPlaylists(): Promise<AudioPlaylist[]> {
     return this.http
       .get<AudioPlaylist[]>(`${this.audioApiUrl}/GetPlaylists`, 'Getting Playlists')

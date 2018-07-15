@@ -11,8 +11,4 @@ export class AudioPlayerInfo {
     volume: number;
 
     constructor() { }
-
-    do(): number {
-        return 5;
-    }
 }

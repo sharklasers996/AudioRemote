@@ -2,6 +2,7 @@ import { NgModule, ErrorHandler } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { AppComponent } from './app.component';
+import { LongPressModule } from 'ionic-long-press'
 
 import { PlayerPage } from '../pages/player/player';
 import { PlaylistsPage } from '../pages/playlists/playlists';
@@ -29,6 +30,7 @@ import { CommandQueueApiProvider } from '../providers/command-queue-api/command-
     imports: [
         BrowserModule,
         HttpClientModule,
+        LongPressModule,
         IonicModule.forRoot(AppComponent)
     ],
     bootstrap: [IonicApp],

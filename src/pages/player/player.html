@@ -1,9 +1,9 @@
 <ion-content padding>
 
     <ion-list no-lines [virtualScroll]="playlistFiles">
-        <ion-item-sliding *virtualItem="let file">
-            <ion-item color="background">
 
+        <button *virtualItem="let file" ion-item color="background" [ngClass]="{ 'current-item' : playerInfo?.path == file.path }" ion-long-press [interval]="400" (onPressStart)="playlistFileLongClick(file)"
+            (click)="playlistFileClick(file)">
                 <ion-grid class="playlist-item">
                     <ion-row>
                         <ion-col col-sm-6 push-sm-6 col-xs-12>
@@ -16,22 +16,9 @@
                         </ion-col>
                     </ion-row>
                 </ion-grid>
+        </button>
 
-
-            </ion-item>
-            <ion-item-options side="right">
-                <button ion-button color="primary">
-                    <ion-icon name="ios-more"></ion-icon>
-                    More
-                </button>
-                <button ion-button color="danger">
-                    <ion-icon name="star"></ion-icon>
-                    Queue
-                </button>
-            </ion-item-options>
-        </ion-item-sliding>
     </ion-list>
-
 
 </ion-content>
 

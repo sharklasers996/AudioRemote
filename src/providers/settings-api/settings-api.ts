@@ -15,4 +15,14 @@ export class SettingsApiProvider {
         return value;
       });
   }
+
+  public updateSettingValue(settingsKey: SettingsKey, settingValue: any) {
+    this.http
+      .post(
+        `${this.settingsApiUrl}/UpdateSettingValue`,
+        {
+          settingsKey: settingsKey,
+          value: settingValue
+        });
+  }
 }

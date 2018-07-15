@@ -19,6 +19,8 @@ export class PlayerPage {
     public playerInfo: AudioPlayerInfo = new AudioPlayerInfo();
     public currentPlaylist: AudioPlaylist;
 
+    private playlistFileLongClicked: boolean = false;
+
     constructor(
         public navCtrl: NavController,
         private audioApi: AudioApiProvider,
@@ -34,7 +36,6 @@ export class PlayerPage {
         this.audioDataChangeService
             .audioPlayerInfoChanged
             .subscribe((playerInfo: AudioPlayerInfo) => {
-                playerInfo.volume = playerInfo.volume;
                 this.playerInfo = playerInfo;
             });
 
@@ -68,7 +69,6 @@ export class PlayerPage {
     }
 
     public volumeSliderChange(event: any): void {
-        console.log(event._valA);
         this.commandQueueApi.addCommand(Commands.ChangeVolume, event._valA);
     }
 
@@ -76,5 +76,26 @@ export class PlayerPage {
         if (event._pressed) {
             this.commandQueueApi.addCommand(Commands.Seek, event._valA);
         }
+    }
+
+    public playlistFileLongClick(file: AudioFile): void {
+        this.playlistFileLongClicked = true;
+    }
+
+    public playlistFileClick(file: AudioFile): void {
+        if (this.playlistFileLongClicked) {
+            this.playlistFileLongClicked = false;
+            return;
+        }
+
+        this.playerInfo.path = file.path;
+        this.playerInfo.artist = file.artist;
+        this.playerInfo.track = file.title;
+
+        this.audioApi.updateAudioPlayerInfo(this.playerInfo);
+
+        this.settingsApi.updateSettingValue(SettingsKey.LastAudioFile, file);
+
+        this.commandQueueApi.addCommand(Commands.PlayFile, file);
     }
 }
