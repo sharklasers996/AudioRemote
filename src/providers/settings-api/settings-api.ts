@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClientWithLoader } from '../../utils/http-client-with-loader';
 import { SettingsKey } from '../../enums/settings-key.enum';
+import { Environment } from '../../constants/environment';
 
 @Injectable()
 export class SettingsApiProvider {
-  private settingsApiUrl: string = '/api/SettingsApi';
+  private settingsApiUrl: string = Environment.ApiUrl + '/api/SettingsApi';
 
   constructor(public http: HttpClientWithLoader) { }
 

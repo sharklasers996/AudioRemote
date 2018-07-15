@@ -4,11 +4,12 @@ import { LoadingController } from 'ionic-angular/umd';
 import { AudioPlaylist } from '../../models/audio-playlist';
 import { AudioFile } from '../../models/audio-file';
 import { AudioPlayerInfo } from '../../models/audio-player-info';
+import { Environment } from '../../constants/environment';
 
 @Injectable()
 export class AudioApiProvider {
-  private playerInfoTrackerApiUrl: string = '/api/PlayerInfoTrackerApi';
-  private audioApiUrl: string = '/api/AudioApi';
+  private playerInfoTrackerApiUrl: string = Environment.ApiUrl + '/api/PlayerInfoTrackerApi';
+  private audioApiUrl: string = Environment.ApiUrl + '/api/AudioApi';
 
   constructor(public http: HttpClientWithLoader) { }
 
