@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavController, PopoverController } from 'ionic-angular';
 import { AudioApiProvider } from '../../providers/audio-api/audio-api';
 import { SettingsApiProvider } from '../../providers/settings-api/settings-api';
 import { SettingsKey } from '../../enums/settings-key.enum';
@@ -9,6 +9,7 @@ import { AudioPlaylist } from '../../models/audio-playlist';
 import { AudioPlayerInfo } from '../../models/audio-player-info';
 import { CommandQueueApiProvider } from '../../providers/command-queue-api/command-queue-api';
 import { Commands } from '../../enums/commands.enum';
+import { PlayerMenuComponent } from '../../components/player-menu/player-menu';
 
 @Component({
     selector: 'page-player',
@@ -26,7 +27,8 @@ export class PlayerPage {
         private audioApi: AudioApiProvider,
         private settingsApi: SettingsApiProvider,
         private audioDataChangeService: AudioDataChangeServiceProvider,
-        private commandQueueApi: CommandQueueApiProvider) { }
+        private commandQueueApi: CommandQueueApiProvider,
+        private popoverCtrl: PopoverController) { }
 
     ionViewDidLoad() {
         this.audioDataChangeService
@@ -78,8 +80,14 @@ export class PlayerPage {
         }
     }
 
-    public playlistFileLongClick(file: AudioFile): void {
+    public playlistFileLongClick(file: AudioFile, event: any): void {
         this.playlistFileLongClicked = true;
+
+        let popover = this.popoverCtrl.create(PlayerMenuComponent, {}, {cssClass: 'player-menu'});
+
+        popover.present({
+            ev: event
+        });
     }
 
     public playlistFileClick(file: AudioFile): void {

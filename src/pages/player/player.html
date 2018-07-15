@@ -2,7 +2,7 @@
 
     <ion-list no-lines [virtualScroll]="playlistFiles">
 
-        <button *virtualItem="let file" ion-item color="background" [ngClass]="{ 'current-item' : playerInfo?.path == file.path }" ion-long-press [interval]="400" (onPressStart)="playlistFileLongClick(file)"
+        <button *virtualItem="let file" ion-item color="background" [ngClass]="{ 'current-item' : playerInfo?.path == file.path }" ion-long-press [interval]="400" (onPressStart)="playlistFileLongClick(file, $event)"
             (click)="playlistFileClick(file)">
                 <ion-grid class="playlist-item">
                     <ion-row>

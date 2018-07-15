@@ -17,6 +17,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { HttpClientWithLoader } from '../utils/http-client-with-loader';
 import { AudioDataChangeServiceProvider } from '../providers/audio-data-change-service/audio-data-change-service';
 import { CommandQueueApiProvider } from '../providers/command-queue-api/command-queue-api';
+import { PlayerMenuComponent } from '../components/player-menu/player-menu';
 
 
 @NgModule({
@@ -25,7 +26,8 @@ import { CommandQueueApiProvider } from '../providers/command-queue-api/command-
         PlayerPage,
         PlaylistsPage,
         BrowserPage,
-        TabsPage
+        TabsPage,
+        PlayerMenuComponent
     ],
     imports: [
         BrowserModule,
@@ -39,7 +41,8 @@ import { CommandQueueApiProvider } from '../providers/command-queue-api/command-
         PlayerPage,
         PlaylistsPage,
         BrowserPage,
-        TabsPage
+        TabsPage,
+        PlayerMenuComponent
     ],
     providers: [
         StatusBar,
