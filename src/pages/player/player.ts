@@ -33,7 +33,8 @@ export class PlayerPage {
 
         this.audioDataChangeService
             .audioPlayerInfoChanged
-            .subscribe(playerInfo => {
+            .subscribe((playerInfo: AudioPlayerInfo) => {
+                playerInfo.volume = playerInfo.volume;
                 this.playerInfo = playerInfo;
             });
 
@@ -67,6 +68,13 @@ export class PlayerPage {
     }
 
     public volumeSliderChange(event: any): void {
-        this.commandQueueApi.addCommand(Commands.ChangeVolume, event.ratio * 100);
+        console.log(event._valA);
+        this.commandQueueApi.addCommand(Commands.ChangeVolume, event._valA);
+    }
+
+    public timeSliderChange(event: any): void {
+        if (event._pressed) {
+            this.commandQueueApi.addCommand(Commands.Seek, event._valA);
+        }
     }
 }

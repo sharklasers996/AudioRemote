@@ -36,7 +36,8 @@
 </ion-content>
 
 <ion-footer>
-    <ion-range min="0" max="100" pin="true" color="grey" pin="false" class="slider">
+    <ion-range [(ngModel)]="playerInfo.currentPosition" min="0" max="{{playerInfo?.duration}}" pin="true" color="grey" pin="false"
+        class="slider" (ionChange)="timeSliderChange($event)">
         <ion-icon range-left small name="volume-low"></ion-icon>
         <ion-icon range-right name="volume-high"></ion-icon>
     </ion-range>
@@ -88,7 +89,8 @@
 
 
 
-    <ion-range [(ngModel)]="playerInfo.volume" min="0" max="100" pin="true" step="0.5" color="primary" class="slider" (ionChange)="volumeSliderChange($event)">
+    <ion-range [(ngModel)]="playerInfo.volume" min="0" max="15" pin="false" color="primary" class="slider" (click)="opa($event)"
+        (ionChange)="volumeSliderChange($event)">
         <ion-icon range-left small name="volume-low"></ion-icon>
         <ion-icon range-right name="volume-high"></ion-icon>
     </ion-range>

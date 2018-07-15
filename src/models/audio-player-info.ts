@@ -4,11 +4,15 @@ export class AudioPlayerInfo {
     track: string;
     currentPosition: number;
     duration: number;
-    volume: number;
     playingOrder: number;
     currentPositionString: string = '00:00';
     durationString: string = '00:00';
     isPaused: boolean;
+    volume: number;
 
     constructor() { }
+
+    do(): number {
+        return 5;
+    }
 }
