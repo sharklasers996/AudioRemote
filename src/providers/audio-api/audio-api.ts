@@ -63,4 +63,19 @@ export class AudioApiProvider {
         return files;
       })
   }
+
+  public deleteFiles(files: AudioFile[]): void {
+    this.http
+      .post(`${this.audioApiUrl}/DeleteFiles`, files);
+  }
+
+  public removeFileFromPlaylist(files: AudioFile[], playlist: AudioPlaylist): void {
+    this.http
+      .post(
+        `${this.audioApiUrl}/RemoveFilesFromPlaylist`,
+        {
+          playlist: playlist,
+          files: files
+        });
+  }
 }
