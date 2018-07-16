@@ -2,20 +2,20 @@
 
     <ion-list no-lines [virtualScroll]="playlistFiles">
 
-        <button *virtualItem="let file" ion-item color="background" [ngClass]="{ 'current-item' : playerInfo?.path == file.path }" ion-long-press [interval]="400" (onPressStart)="playlistFileLongClick(file, $event)"
-            (click)="playlistFileClick(file)">
-                <ion-grid class="playlist-item">
-                    <ion-row>
-                        <ion-col col-sm-6 push-sm-6 col-xs-12>
-                            {{ file.title }}
-                        </ion-col>
-                        <ion-col col-sm-6 pull-sm-6 col-xs-12 text-right text-sm-left>
-                            <span class="artist">
-                                {{ file.artist }}
-                            </span>
-                        </ion-col>
-                    </ion-row>
-                </ion-grid>
+        <button *virtualItem="let file" ion-item color="background" [ngClass]="{ 'current-item' : playerInfo?.path == file.path }"
+            ion-long-press [interval]="400" (onPressStart)="playlistFileLongClick(file, $event)" (click)="playlistFileClick(file)">
+            <ion-grid class="playlist-item">
+                <ion-row>
+                    <ion-col col-sm-6 push-sm-6 col-xs-12>
+                        {{ file.title }} {{file.queueId}}
+                    </ion-col>
+                    <ion-col col-sm-6 pull-sm-6 col-xs-12 text-right text-sm-left>
+                        <span class="artist">
+                            {{ file.artist }}
+                        </span>
+                    </ion-col>
+                </ion-row>
+            </ion-grid>
         </button>
 
     </ion-list>
@@ -36,7 +36,7 @@
         </ion-row>
         <ion-row>
             <ion-col col-9>{{playerInfo?.track}}</ion-col>
-            <ion-col col-3 text-right>{{currentPlaylist?.name}}</ion-col>
+            <ion-col col-3 text-right>{{playerInfo?.currentPlaylistName}}</ion-col>
         </ion-row>
     </ion-grid>
 

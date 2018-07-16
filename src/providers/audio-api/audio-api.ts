@@ -25,11 +25,6 @@ export class AudioApiProvider {
       });
   }
 
-  public updateAudioPlayerInfo(playerInfo: AudioPlayerInfo): void {
-    this.http
-      .post(`${this.playerInfoTrackerApiUrl}/UpdateAudioPlayerInfo`, playerInfo);
-  }
-
   public getPlaylists(): Promise<AudioPlaylist[]> {
     return this.http
       .get<AudioPlaylist[]>(`${this.audioApiUrl}/GetPlaylists`, 'Getting Playlists')
@@ -38,16 +33,26 @@ export class AudioApiProvider {
       });
   }
 
-  public getPlaylistFiles(playlist: AudioPlaylist): Promise<AudioFile[]> {
+  public setPlaylist(playlist: AudioPlaylist): void {
+    this.http
+      .post(`${this.audioApiUrl}/SetPlaylist`, playlist);
+  }
+
+  public addOrRemoveFromQueue(file: AudioFile): Promise<any> {
     return this.http
-      .post<AudioFile[]>(`${this.audioApiUrl}/GetPlaylistFiles`, playlist)
-      .then(files => {
+      .post(`${this.audioApiUrl}/AddOrRemoveFileFromAutoQueue`, file);
+  }
+
+  public getCurrentPlaylistFiles(): Promise<AudioFile[]> {
+    return this.http
+      .get<AudioFile[]>(`${this.audioApiUrl}/GetCurrentPlaylistFiles`)
+      .then((files: AudioFile[]) => {
         return files;
       });
   }
 
-  public setPlaylist(playlist: AudioPlaylist): void {
+  public playFile(file: AudioFile): void {
     this.http
-      .post(`${this.audioApiUrl}/SetPlaylist`, playlist);
+      .post(`${this.audioApiUrl}/PlayFile`, file);
   }
 }

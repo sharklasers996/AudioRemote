@@ -9,6 +9,7 @@ export class AudioPlayerInfo {
     durationString: string = '00:00';
     isPaused: boolean;
     volume: number;
+    currentPlaylistName: string;
 
     constructor() { }
 }

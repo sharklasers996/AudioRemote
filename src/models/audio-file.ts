@@ -6,4 +6,5 @@ export interface AudioFile {
     album: string;
     title: string;
     duration: string;
+    queueId: number;
 }
