@@ -1,12 +1,11 @@
 import { Component, EventEmitter } from '@angular/core';
-import { NavController, PopoverController } from 'ionic-angular';
+import { NavController, ActionSheetController, ActionSheet } from 'ionic-angular';
 import { AudioApiProvider } from '../../providers/audio-api/audio-api';
 import { AudioFile } from '../../models/audio-file';
 import { AudioDataChangeServiceProvider } from '../../providers/audio-data-change-service/audio-data-change-service';
 import { AudioPlayerInfo } from '../../models/audio-player-info';
 import { CommandQueueApiProvider } from '../../providers/command-queue-api/command-queue-api';
 import { Commands } from '../../enums/commands.enum';
-import { PlayerMenuComponent } from '../../components/player-menu/player-menu';
 
 @Component({
     selector: 'page-player',
@@ -25,7 +24,7 @@ export class PlayerPage {
         private audioApi: AudioApiProvider,
         private audioDataChangeService: AudioDataChangeServiceProvider,
         private commandQueueApi: CommandQueueApiProvider,
-        private popoverCtrl: PopoverController
+        private actionSheetCtrl: ActionSheetController
     ) { }
 
     ionViewWillEnter() {
@@ -73,14 +72,72 @@ export class PlayerPage {
         }
     }
 
+    public opa(): void {
+        console.log('opa');
+    }
+
+    public actionSheet: ActionSheet;
+
     public playlistFileLongClick(file: AudioFile, event: any): void {
         this.playlistFileLongClicked = true;
 
-        let popover = this.popoverCtrl.create(PlayerMenuComponent, {}, { cssClass: 'player-menu' });
+        let queueText = 'Enqueue';
+        if (file.queueId) {
+            queueText = 'Dequeue';
+        }
 
-        popover.present({
-            ev: event
+        this.actionSheet = this.actionSheetCtrl.create({
+            buttons: [
+                {
+                    text: queueText,
+                    icon: 'add-circle',
+                    handler: () => {
+                        this.audioApi
+                            .addOrRemoveFromQueue(file)
+                            .then(() => {
+                                this.updatePlaylistWithQueueIds();
+                            });
+                    }
+                },
+                {
+                    text: 'Delete',
+                    icon: 'trash',
+                    handler: () => {
+                    }
+                }, {
+                    text: 'Remove From Playlist',
+                    icon: 'close',
+                    handler: () => {
+                        console.log('Destructive clicked');
+                    }
+                }, {
+                    text: 'Edit Mp3 Tag',
+                    icon: 'pricetag',
+                    handler: () => {
+                        console.log('Destructive clicked');
+                    }
+                }
+            ]
         });
+
+        this.actionSheet.present();
+
+    }
+
+    private updatePlaylistWithQueueIds(): void {
+        this.audioApi
+            .getQueue()
+            .then((files: AudioFile[]) => {
+                for (let i = 0; i < this.playlistFiles.length; i++) {
+                    var fileInQueue = files.find(f => f.path == this.playlistFiles[i].path);
+                    if (fileInQueue) {
+                        this.playlistFiles[i].queueId = fileInQueue.queueId;
+                    }
+                    else {
+                        this.playlistFiles[i].queueId = null;
+                    }
+                }
+            });
     }
 
     public playlistFileClick(file: AudioFile): void {
@@ -89,14 +146,6 @@ export class PlayerPage {
             return;
         }
 
-        // this.playerInfo.path = file.path;
-        // this.playerInfo.artist = file.artist;
-        // this.playerInfo.track = file.title;
-
-        // this.audioApi.updateAudioPlayerInfo(this.playerInfo);
-
-        // this.settingsApi.updateSettingValue(SettingsKey.LastAudioFile, file);
         this.audioApi.playFile(file);
-        //this.commandQueueApi.addCommand(Commands.PlayFile, file);
     }
 }

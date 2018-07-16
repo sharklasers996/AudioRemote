@@ -55,4 +55,12 @@ export class AudioApiProvider {
     this.http
       .post(`${this.audioApiUrl}/PlayFile`, file);
   }
+
+  public getQueue(): Promise<AudioFile[]> {
+    return this.http
+      .get<AudioFile[]>(`${this.audioApiUrl}/GetQueue`)
+      .then((files: AudioFile[]) => {
+        return files;
+      })
+  }
 }
