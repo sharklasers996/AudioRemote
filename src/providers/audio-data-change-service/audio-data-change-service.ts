@@ -15,7 +15,7 @@ export class AudioDataChangeServiceProvider {
     this.monitorAudioPlayerInfo();
   }
 
-  public onPlaylistChanged(playlist: AudioPlaylist): void {
+  public onPlaylistChanged(playlist?: AudioPlaylist): void {
     this.playlistChanged.emit(playlist);
   }
 

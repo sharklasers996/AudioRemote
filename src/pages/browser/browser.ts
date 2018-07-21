@@ -158,6 +158,7 @@ export class BrowserPage {
         this.audioApi
             .deleteMediaFiles(this.selectedFiles, this.selectedDirectories)
             .then(() => {
+                this.audioDataChangeService.onPlaylistChanged();
                 this.showToast('Deleted files');
             });
         this.resetSelection();

@@ -43,7 +43,7 @@ export class PlayerPage {
         this.audioDataChangeService
             .playlistChanged
             .subscribe((playlist: AudioPlaylist) => {
-                if (playlist.name == this.playerInfo.currentPlaylist.name) {
+                if (!playlist || playlist.name == this.playerInfo.currentPlaylist.name) {
                     this.audioApi
                         .setPlaylist(playlist)
                         .then(() => {
