@@ -10,7 +10,7 @@ import { AudioPlayerInfo } from '../../models/audio-player-info';
 })
 export class PlaylistsPage {
     public playlists: AudioPlaylist[];
-    public currentPlaylistName: string;
+    public currentPlaylist: AudioPlaylist;
 
     constructor(
         public navCtrl: NavController,
@@ -25,13 +25,13 @@ export class PlaylistsPage {
                 this.audioApi
                     .getAudioPlayerInfo()
                     .then((playerInfo: AudioPlayerInfo) => {
-                        this.currentPlaylistName = playerInfo.currentPlaylistName;
+                        this.currentPlaylist = playerInfo.currentPlaylist;
                     });
             });
     }
 
     public playlistClicked(playlist: AudioPlaylist): void {
-        this.currentPlaylistName = playlist.name;
+        this.currentPlaylist = playlist;
         this.audioApi.setPlaylist(playlist);
     }
 }

@@ -64,13 +64,13 @@ export class AudioApiProvider {
       })
   }
 
-  public deleteFiles(files: AudioFile[]): void {
-    this.http
+  public deleteFiles(files: AudioFile[]): Promise<any> {
+    return this.http
       .post(`${this.audioApiUrl}/DeleteFiles`, files);
   }
 
-  public removeFileFromPlaylist(files: AudioFile[], playlist: AudioPlaylist): void {
-    this.http
+  public removeFileFromPlaylist(files: AudioFile[], playlist: AudioPlaylist): Promise<any> {
+    return this.http
       .post(
         `${this.audioApiUrl}/RemoveFilesFromPlaylist`,
         {

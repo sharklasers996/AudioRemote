@@ -1,3 +1,5 @@
+import { AudioPlaylist } from "./audio-playlist";
+
 export class AudioPlayerInfo {
     path: string;
     artist: string;
@@ -9,7 +11,7 @@ export class AudioPlayerInfo {
     durationString: string = '00:00';
     isPaused: boolean;
     volume: number;
-    currentPlaylistName: string;
+    currentPlaylist: AudioPlaylist;
 
     constructor() { }
 }

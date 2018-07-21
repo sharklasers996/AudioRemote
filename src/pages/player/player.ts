@@ -1,5 +1,5 @@
 import { Component, EventEmitter } from '@angular/core';
-import { NavController, ActionSheetController, ActionSheet } from 'ionic-angular';
+import { NavController, ActionSheetController, ActionSheet, ToastController } from 'ionic-angular';
 import { AudioApiProvider } from '../../providers/audio-api/audio-api';
 import { AudioFile } from '../../models/audio-file';
 import { AudioDataChangeServiceProvider } from '../../providers/audio-data-change-service/audio-data-change-service';
@@ -24,16 +24,25 @@ export class PlayerPage {
         private audioApi: AudioApiProvider,
         private audioDataChangeService: AudioDataChangeServiceProvider,
         private commandQueueApi: CommandQueueApiProvider,
-        private actionSheetCtrl: ActionSheetController
+        private actionSheetCtrl: ActionSheetController,
+        private toastCtrl: ToastController
     ) { }
 
     ionViewWillEnter() {
         this.playerInfoChangedEvent = this.audioDataChangeService
             .audioPlayerInfoChanged
             .subscribe((playerInfo: AudioPlayerInfo) => {
-                if (this.playerInfo.currentPlaylistName != playerInfo.currentPlaylistName) {
+                if (!this.playerInfo.currentPlaylist
+                    && playerInfo.currentPlaylist) {
                     this.playlistChanged();
                 }
+                else
+
+                    if (this.playerInfo.currentPlaylist.name != playerInfo.currentPlaylist.name) {
+                        this.playlistChanged();
+                    }
+
+
                 this.playerInfo = playerInfo;
             });
     }
@@ -72,10 +81,6 @@ export class PlayerPage {
         }
     }
 
-    public opa(): void {
-        console.log('opa');
-    }
-
     public actionSheet: ActionSheet;
 
     public playlistFileLongClick(file: AudioFile, event: any): void {
@@ -92,23 +97,20 @@ export class PlayerPage {
                     text: queueText,
                     icon: 'add-circle',
                     handler: () => {
-                        this.audioApi
-                            .addOrRemoveFromQueue(file)
-                            .then(() => {
-                                this.updatePlaylistWithQueueIds();
-                            });
+                        this.addOrRemoveFromQueue(file);
                     }
                 },
                 {
                     text: 'Delete',
                     icon: 'trash',
                     handler: () => {
+                        this.deleteFile(file);
                     }
                 }, {
                     text: 'Remove From Playlist',
                     icon: 'close',
                     handler: () => {
-                        console.log('Destructive clicked');
+                        this.removeFromPlaylist(file);
                     }
                 }, {
                     text: 'Edit Mp3 Tag',
@@ -121,7 +123,14 @@ export class PlayerPage {
         });
 
         this.actionSheet.present();
+    }
 
+    private addOrRemoveFromQueue(file: AudioFile): void {
+        this.audioApi
+            .addOrRemoveFromQueue(file)
+            .then(() => {
+                this.updatePlaylistWithQueueIds();
+            });
     }
 
     private updatePlaylistWithQueueIds(): void {
@@ -140,6 +149,24 @@ export class PlayerPage {
             });
     }
 
+    private deleteFile(file: AudioFile): void {
+        this.audioApi
+            .deleteFiles([file])
+            .then(() => {
+                this.playlistFiles = this.playlistFiles.filter(f => f.path !== file.path);
+                this.showToast(`Deleted '${file.title}'`);
+            });
+    }
+
+    private removeFromPlaylist(file: AudioFile): void {
+        this.audioApi
+            .removeFileFromPlaylist([file], this.playerInfo.currentPlaylist)
+            .then(() => {
+                this.playlistFiles = this.playlistFiles.filter(f => f.path !== file.path);
+                this.showToast(`Removed '${file.title}'`);
+            });
+    }
+
     public playlistFileClick(file: AudioFile): void {
         if (this.playlistFileLongClicked) {
             this.playlistFileLongClicked = false;
@@ -147,5 +174,15 @@ export class PlayerPage {
         }
 
         this.audioApi.playFile(file);
+    }
+
+    private showToast(message: string): void {
+        let toast = this.toastCtrl.create({
+            message: message,
+            duration: 2000,
+            position: 'top'
+        });
+
+        toast.present();
     }
 }
