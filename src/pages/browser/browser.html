@@ -6,16 +6,34 @@
     </ion-navbar>
 </ion-header>
 <ion-content padding>
+    <ion-fab bottom right>
+        <button *ngIf="!selectMany" ion-fab mini (click)="toggleSelectMany()">
+            <ion-icon name="checkmark-circle-outline"></ion-icon>
+        </button>
+        <button *ngIf="selectMany" ion-fab mini (click)="openMenu()">
+            <ion-icon name="more"></ion-icon>
+        </button>
+        <button *ngIf="selectMany" ion-fab mini color="danger" (click)="toggleSelectMany()">
+            <ion-icon name="arrow-round-back"></ion-icon>
+        </button>
+    </ion-fab>
 
     <ion-list no-lines>
         <button ion-item color="background" *ngFor="let directory of directoryListing?.directories" ion-long-press [interval]="400"
-            (click)="browseLocation(directory.path)">
+            (click)="directoryClick(directory)" [ngClass]="{'selected-item' : directory.selected}" (onPressStart)="directoryLongClick(directory)">
             <ion-icon name="folder-open"></ion-icon>
             {{ directory?.name }}
         </button>
-        <button ion-item color="background" *ngFor="let file of directoryListing?.files" ion-long-press [interval]="400">
+        <button ion-item color="background" *ngFor="let file of directoryListing?.files" ion-long-press [interval]="400" (click)="fileClick(file)"
+            [ngClass]="{'selected-item' : file.selected}" (onPressStart)="fileLongClick(file)">
             <ion-icon name="musical-note"></ion-icon>
             {{ file?.name }}
         </button>
     </ion-list>
+
+    <ion-select [hidden]="true" [(ngModel)]="selectedPlaylist" (ionChange)="playlistSelectChanged()" [selectOptions]="selectPlaylistOptions"
+        #selectmenu>
+        <ion-option *ngFor="let playlist of playlists" [value]="playlist">{{playlist?.name}}</ion-option>
+    </ion-select>
+
 </ion-content>

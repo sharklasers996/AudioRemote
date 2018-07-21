@@ -6,6 +6,7 @@ import { AudioDataChangeServiceProvider } from '../../providers/audio-data-chang
 import { AudioPlayerInfo } from '../../models/audio-player-info';
 import { CommandQueueApiProvider } from '../../providers/command-queue-api/command-queue-api';
 import { Commands } from '../../enums/commands.enum';
+import { AudioPlaylist } from '../../models/audio-playlist';
 
 @Component({
     selector: 'page-player',
@@ -22,6 +23,7 @@ export class PlayerPage {
 
     public selectMany: boolean = false;
 
+
     @ViewChild('searchbar') searchBarElement: Searchbar;
     public searching: boolean = false;
 
@@ -37,6 +39,18 @@ export class PlayerPage {
         loadingCtrl: LoadingController
     ) {
         this.audioApi.addLoadingController(loadingCtrl);
+
+        this.audioDataChangeService
+            .playlistChanged
+            .subscribe((playlist: AudioPlaylist) => {
+                if (playlist.name == this.playerInfo.currentPlaylist.name) {
+                    this.audioApi
+                        .setPlaylist(playlist)
+                        .then(() => {
+                            this.getCurrentPlaylistFiles();
+                        });
+                }
+            });
     }
 
     ionViewWillEnter() {

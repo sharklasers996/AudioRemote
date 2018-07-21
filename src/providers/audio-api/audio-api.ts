@@ -5,6 +5,8 @@ import { AudioPlaylist } from '../../models/audio-playlist';
 import { AudioFile } from '../../models/audio-file';
 import { AudioPlayerInfo } from '../../models/audio-player-info';
 import { Environment } from '../../constants/environment';
+import { MediaDirectory } from '../../models/media-directory';
+import { MediaFile } from '../../models/media-file';
 
 @Injectable()
 export class AudioApiProvider {
@@ -27,14 +29,14 @@ export class AudioApiProvider {
 
   public getPlaylists(): Promise<AudioPlaylist[]> {
     return this.http
-      .get<AudioPlaylist[]>(`${this.audioApiUrl}/GetPlaylists`, 'Getting Playlists')
+      .get<AudioPlaylist[]>(`${this.audioApiUrl}/GetPlaylists`)
       .then(result => {
         return result;
       });
   }
 
-  public setPlaylist(playlist: AudioPlaylist): void {
-    this.http
+  public setPlaylist(playlist: AudioPlaylist): Promise<any> {
+    return this.http
       .post(`${this.audioApiUrl}/SetPlaylist`, playlist);
   }
 
@@ -67,6 +69,26 @@ export class AudioApiProvider {
   public deleteFiles(files: AudioFile[]): Promise<any> {
     return this.http
       .post(`${this.audioApiUrl}/DeleteFiles`, files);
+  }
+
+  public deleteMediaFiles(files: MediaFile[], directories: MediaDirectory[]): Promise<any> {
+    return this.http
+      .post(`${this.audioApiUrl}/DeleteMediaFiles`,
+        {
+          files: files,
+          directories: directories
+        });
+  }
+
+  public addFilesToPlaylist(files: MediaFile[], directories: MediaDirectory[], playlist: AudioPlaylist): Promise<any> {
+    return this.http
+      .post(
+        `${this.audioApiUrl}/AddFilesToPlaylist`,
+        {
+          playlist: playlist,
+          files: files,
+          directories: directories
+        });
   }
 
   public removeFileFromPlaylist(files: AudioFile[], playlist: AudioPlaylist): Promise<any> {
