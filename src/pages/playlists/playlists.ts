@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, AlertController, ToastController, ActionSheetController } from 'ionic-angular';
+import { NavController, AlertController, ToastController, ActionSheetController, LoadingController } from 'ionic-angular';
 import { AudioPlaylist } from '../../models/audio-playlist';
 import { AudioApiProvider } from '../../providers/audio-api/audio-api';
 import { AudioPlayerInfo } from '../../models/audio-player-info';
@@ -17,7 +17,10 @@ export class PlaylistsPage {
         private audioApi: AudioApiProvider,
         private alertCtrl: AlertController,
         private toastCtrl: ToastController,
-        private actionSheetCtrl: ActionSheetController) { }
+        private actionSheetCtrl: ActionSheetController,
+        loadingCtrl: LoadingController) {
+        this.audioApi.addLoadingController(loadingCtrl);
+    }
 
     ionViewDidLoad() {
         this.getPlaylists();

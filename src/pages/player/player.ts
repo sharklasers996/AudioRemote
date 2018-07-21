@@ -1,5 +1,5 @@
 import { Component, EventEmitter, ViewChild } from '@angular/core';
-import { NavController, ActionSheetController, ToastController, Searchbar, Content } from 'ionic-angular';
+import { NavController, ActionSheetController, ToastController, Searchbar, Content, LoadingController } from 'ionic-angular';
 import { AudioApiProvider } from '../../providers/audio-api/audio-api';
 import { AudioFile } from '../../models/audio-file';
 import { AudioDataChangeServiceProvider } from '../../providers/audio-data-change-service/audio-data-change-service';
@@ -33,8 +33,11 @@ export class PlayerPage {
         private audioDataChangeService: AudioDataChangeServiceProvider,
         private commandQueueApi: CommandQueueApiProvider,
         private actionSheetCtrl: ActionSheetController,
-        private toastCtrl: ToastController
-    ) { }
+        private toastCtrl: ToastController,
+        loadingCtrl: LoadingController
+    ) {
+        this.audioApi.addLoadingController(loadingCtrl);
+    }
 
     ionViewWillEnter() {
         this.playerInfoChangedEvent = this.audioDataChangeService
@@ -48,7 +51,8 @@ export class PlayerPage {
                     this.getCurrentPlaylistFiles();
                 }
 
-                if (this.playerInfo.path !== playerInfo.path) {
+                if (this.playerInfo.path !== playerInfo.path
+                    && this.playlistFiles) {
                     this.updatePlaylistWithQueueIds();
                 }
 

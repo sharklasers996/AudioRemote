@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClientWithLoader } from '../../utils/http-client-with-loader';
-import { LoadingController } from 'ionic-angular/umd';
+import { LoadingController } from 'ionic-angular';
 import { AudioPlaylist } from '../../models/audio-playlist';
 import { AudioFile } from '../../models/audio-file';
 import { AudioPlayerInfo } from '../../models/audio-player-info';
@@ -45,7 +45,7 @@ export class AudioApiProvider {
 
   public getCurrentPlaylistFiles(): Promise<AudioFile[]> {
     return this.http
-      .get<AudioFile[]>(`${this.audioApiUrl}/GetCurrentPlaylistFiles`)
+      .get<AudioFile[]>(`${this.audioApiUrl}/GetCurrentPlaylistFiles`, 'Getting Playlist')
       .then((files: AudioFile[]) => {
         return files;
       });

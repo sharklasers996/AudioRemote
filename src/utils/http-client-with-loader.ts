@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { LoadingController, Loading } from "ionic-angular/umd";
+import { LoadingController, Loading } from "ionic-angular";
 
 @Injectable()
 export class HttpClientWithLoader {
