@@ -21,6 +21,8 @@ export class PlayerPage {
 
     public selectMany: boolean = false;
 
+    public searching: boolean = false;
+
     constructor(
         public navCtrl: NavController,
         private audioApi: AudioApiProvider,
@@ -36,12 +38,12 @@ export class PlayerPage {
             .subscribe((playerInfo: AudioPlayerInfo) => {
                 if (!this.playerInfo.currentPlaylist
                     && playerInfo.currentPlaylist) {
-                    this.playlistChanged();
+                    this.getCurrentPlaylistFiles();
                 }
                 else
 
                     if (this.playerInfo.currentPlaylist.name != playerInfo.currentPlaylist.name) {
-                        this.playlistChanged();
+                        this.getCurrentPlaylistFiles();
                     }
 
 
@@ -53,7 +55,7 @@ export class PlayerPage {
         this.playerInfoChangedEvent.unsubscribe();
     }
 
-    private playlistChanged(): void {
+    private getCurrentPlaylistFiles(): void {
         this.audioApi
             .getCurrentPlaylistFiles()
             .then(files => {

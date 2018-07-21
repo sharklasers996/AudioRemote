@@ -1,3 +1,6 @@
+<ion-header>
+    <ion-searchbar *ngIf="searching"></ion-searchbar>
+</ion-header>
 <ion-content padding>
     <ion-fab bottom right *ngIf="selectMany">
         <button ion-fab mini (click)="selectManyMenuMore()">
@@ -8,6 +11,7 @@
         </button>
     </ion-fab>
 
+    <ion-toolbar *ngIf="searching"></ion-toolbar>
     <ion-list no-lines [virtualScroll]="playlistFiles">
 
         <button *virtualItem="let file" ion-item color="background" [ngClass]="{ 'current-item' : playerInfo?.path == file.path, 'selected-item' : file.selected }"
@@ -73,7 +77,7 @@
                 </button>
             </ion-col>
             <ion-col col>
-                <button ion-button icon-only round>
+                <button (click)="searching = !searching" ion-button icon-only round>
                     <ion-icon name="search"></ion-icon>
                 </button>
             </ion-col>
