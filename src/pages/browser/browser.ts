@@ -39,6 +39,9 @@ export class BrowserPage {
 
     ionViewDidLoad() {
         this.browseLocation();
+    }
+
+    ionViewWillEnter() {
         this.getPlaylists();
     }
 
@@ -159,6 +162,7 @@ export class BrowserPage {
             .deleteMediaFiles(this.selectedFiles, this.selectedDirectories)
             .then(() => {
                 this.audioDataChangeService.onPlaylistChanged();
+                this.browseLocation(this.directoryListing.directory);
                 this.showToast('Deleted files');
             });
         this.resetSelection();
