@@ -1,5 +1,5 @@
-import { Component, EventEmitter } from '@angular/core';
-import { NavController, ActionSheetController, ToastController } from 'ionic-angular';
+import { Component, EventEmitter, ViewChild } from '@angular/core';
+import { NavController, ActionSheetController, ToastController, Searchbar } from 'ionic-angular';
 import { AudioApiProvider } from '../../providers/audio-api/audio-api';
 import { AudioFile } from '../../models/audio-file';
 import { AudioDataChangeServiceProvider } from '../../providers/audio-data-change-service/audio-data-change-service';
@@ -13,6 +13,7 @@ import { Commands } from '../../enums/commands.enum';
 })
 export class PlayerPage {
     public playlistFiles: AudioFile[];
+    public displayedPlaylistFiles: AudioFile[];
     public playerInfo: AudioPlayerInfo = new AudioPlayerInfo();
 
     private playlistFileLongClicked: boolean = false;
@@ -21,6 +22,7 @@ export class PlayerPage {
 
     public selectMany: boolean = false;
 
+    @ViewChild('searchbar') searchBarElement: Searchbar;
     public searching: boolean = false;
 
     constructor(
@@ -60,6 +62,7 @@ export class PlayerPage {
             .getCurrentPlaylistFiles()
             .then(files => {
                 this.playlistFiles = files;
+                this.displayedPlaylistFiles = files;
             });
     }
 
@@ -162,12 +165,22 @@ export class PlayerPage {
             .getQueue()
             .then((files: AudioFile[]) => {
                 for (let i = 0; i < this.playlistFiles.length; i++) {
-                    var fileInQueue = files.find(f => f.path == this.playlistFiles[i].path);
+                    let fileInQueue = files.find(f => f.path == this.playlistFiles[i].path);
                     if (fileInQueue) {
                         this.playlistFiles[i].queueId = fileInQueue.queueId;
                     }
                     else {
                         this.playlistFiles[i].queueId = null;
+                    }
+                }
+
+                for (let i = 0; i < this.displayedPlaylistFiles.length; i++) {
+                    let fileInQueue = files.find(f => f.path == this.displayedPlaylistFiles[i].path);
+                    if (fileInQueue) {
+                        this.displayedPlaylistFiles[i].queueId = fileInQueue.queueId;
+                    }
+                    else {
+                        this.displayedPlaylistFiles[i].queueId = null;
                     }
                 }
             });
@@ -178,6 +191,7 @@ export class PlayerPage {
             .deleteFiles([file])
             .then(() => {
                 this.playlistFiles = this.playlistFiles.filter(f => f.path !== file.path);
+                this.displayedPlaylistFiles = this.displayedPlaylistFiles.filter(f => f.path !== file.path);
                 this.showToast(`Deleted '${file.title}'`);
             });
     }
@@ -189,6 +203,9 @@ export class PlayerPage {
                 this.playlistFiles = this.playlistFiles.filter(f => {
                     return files.indexOf(f) === -1;
                 });
+                this.displayedPlaylistFiles = this.displayedPlaylistFiles.filter(f => {
+                    return files.indexOf(f) === -1;
+                });
                 this.showToast(`Deleted ${files.length} files`);
             });
     }
@@ -198,6 +215,7 @@ export class PlayerPage {
             .removeFileFromPlaylist([file], this.playerInfo.currentPlaylist)
             .then(() => {
                 this.playlistFiles = this.playlistFiles.filter(f => f.path !== file.path);
+                this.displayedPlaylistFiles = this.displayedPlaylistFiles.filter(f => f.path !== file.path);
                 this.showToast(`Removed '${file.title}'`);
             });
     }
@@ -207,6 +225,9 @@ export class PlayerPage {
             .removeFileFromPlaylist(files, this.playerInfo.currentPlaylist)
             .then(() => {
                 this.playlistFiles = this.playlistFiles.filter(f => {
+                    return files.indexOf(f) === -1;
+                });
+                this.displayedPlaylistFiles = this.displayedPlaylistFiles.filter(f => {
                     return files.indexOf(f) === -1;
                 });
                 this.showToast(`Removed ${files.length} files`);
@@ -269,15 +290,53 @@ export class PlayerPage {
 
     private getSelectedItemsAndHideMenu(): AudioFile[] {
         this.selectMany = false;
-        return this.playlistFiles.filter(f => f.selected);
+        return this.displayedPlaylistFiles.filter(f => f.selected);
     }
 
     public selectManyMenuBack(): void {
-        for (let i = 0; i < this.playlistFiles.length; i++) {
-            this.playlistFiles[i].selected = false;
+        for (let i = 0; i < this.displayedPlaylistFiles.length; i++) {
+            this.displayedPlaylistFiles[i].selected = false;
         }
 
         this.selectMany = false;
+    }
+
+    public toggleSearch(): void {
+        this.searching = !this.searching;
+
+        if (!this.searching) {
+            this.displayedPlaylistFiles = this.playlistFiles;
+        } else {
+            setTimeout(() => {
+                if (!this.searchBarElement) {
+                    return;
+                }
+                this.searchBarElement.setFocus();
+            }, 300);
+        }
+    }
+
+    public searchInputChanged(event: any) {
+        if (!event.target.value) {
+            this.displayedPlaylistFiles = this.playlistFiles;
+            return;
+        }
+
+        this.displayedPlaylistFiles = [];
+
+        let searchQuery = event.target.value;
+        let regex = new RegExp(searchQuery, 'i');
+
+        for (let i = 0; i < this.playlistFiles.length; i++) {
+            let playlistFile = this.playlistFiles[i];
+            if (!playlistFile.title) {
+                continue;
+            }
+
+            if (playlistFile.title.search(regex) !== -1) {
+                this.displayedPlaylistFiles.push(playlistFile);
+            }
+        }
     }
 
     private showToast(message: string): void {
