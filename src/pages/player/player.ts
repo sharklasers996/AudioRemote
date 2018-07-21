@@ -242,14 +242,14 @@ export class PlayerPage {
                     text: 'Delete',
                     icon: 'trash',
                     handler: () => {
-                        let selectedFiles = this.playlistFiles.filter(f => f.selected);
+                        let selectedFiles = this.getSelectedItemsAndHideMenu();
                         this.deleteFiles(selectedFiles);
                     }
                 }, {
                     text: 'Remove From Playlist',
                     icon: 'close',
                     handler: () => {
-                        let selectedFiles = this.playlistFiles.filter(f => f.selected);
+                        let selectedFiles = this.getSelectedItemsAndHideMenu();
                         this.removeMultipleFromPlaylist(selectedFiles);
                     }
                 }, {
@@ -263,6 +263,11 @@ export class PlayerPage {
         });
 
         multipleFileMenu.present();
+    }
+
+    private getSelectedItemsAndHideMenu(): AudioFile[] {
+        this.selectMany = false;
+        return this.playlistFiles.filter(f => f.selected);
     }
 
     public selectManyMenuBack(): void {
