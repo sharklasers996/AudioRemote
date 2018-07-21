@@ -1,5 +1,5 @@
 import { Component, EventEmitter } from '@angular/core';
-import { NavController, ActionSheetController, ActionSheet, ToastController } from 'ionic-angular';
+import { NavController, ActionSheetController, ToastController } from 'ionic-angular';
 import { AudioApiProvider } from '../../providers/audio-api/audio-api';
 import { AudioFile } from '../../models/audio-file';
 import { AudioDataChangeServiceProvider } from '../../providers/audio-data-change-service/audio-data-change-service';
@@ -18,6 +18,8 @@ export class PlayerPage {
     private playlistFileLongClicked: boolean = false;
 
     private playerInfoChangedEvent: EventEmitter<AudioPlayerInfo>;
+
+    public selectMany: boolean = false;
 
     constructor(
         public navCtrl: NavController,
@@ -81,17 +83,37 @@ export class PlayerPage {
         }
     }
 
-    public actionSheet: ActionSheet;
+    public playlistFileClick(file: AudioFile): void {
+        if (this.selectMany) {
+            file.selected = !file.selected;
+            return;
+        }
+
+        if (this.playlistFileLongClicked) {
+            this.playlistFileLongClicked = false;
+            return;
+        }
+
+        this.audioApi.playFile(file);
+    }
 
     public playlistFileLongClick(file: AudioFile, event: any): void {
+        if (this.selectMany) {
+            return;
+        }
+
         this.playlistFileLongClicked = true;
 
+        this.openSingleFileMenu(file);
+    }
+
+    private openSingleFileMenu(file: AudioFile): void {
         let queueText = 'Enqueue';
         if (file.queueId) {
             queueText = 'Dequeue';
         }
 
-        this.actionSheet = this.actionSheetCtrl.create({
+        let singleFileMenu = this.actionSheetCtrl.create({
             buttons: [
                 {
                     text: queueText,
@@ -122,7 +144,7 @@ export class PlayerPage {
             ]
         });
 
-        this.actionSheet.present();
+        singleFileMenu.present();
     }
 
     private addOrRemoveFromQueue(file: AudioFile): void {
@@ -158,6 +180,17 @@ export class PlayerPage {
             });
     }
 
+    private deleteFiles(files: AudioFile[]): void {
+        this.audioApi
+            .deleteFiles(files)
+            .then(() => {
+                this.playlistFiles = this.playlistFiles.filter(f => {
+                    return files.indexOf(f) === -1;
+                });
+                this.showToast(`Deleted ${files.length} files`);
+            });
+    }
+
     private removeFromPlaylist(file: AudioFile): void {
         this.audioApi
             .removeFileFromPlaylist([file], this.playerInfo.currentPlaylist)
@@ -167,13 +200,77 @@ export class PlayerPage {
             });
     }
 
-    public playlistFileClick(file: AudioFile): void {
-        if (this.playlistFileLongClicked) {
-            this.playlistFileLongClicked = false;
-            return;
+    private removeMultipleFromPlaylist(files: AudioFile[]): void {
+        this.audioApi
+            .removeFileFromPlaylist(files, this.playerInfo.currentPlaylist)
+            .then(() => {
+                this.playlistFiles = this.playlistFiles.filter(f => {
+                    return files.indexOf(f) === -1;
+                });
+                this.showToast(`Removed ${files.length} files`);
+            });
+    }
+
+    public openMenu(): void {
+        let menu = this.actionSheetCtrl.create({
+            buttons: [
+                {
+                    text: 'Select Many',
+                    icon: 'add-circle',
+                    handler: () => {
+                        this.selectMany = true;
+                    }
+                },
+                {
+                    text: 'Current File',
+                    icon: 'trash',
+                    handler: () => {
+                        let currentFile = this.playlistFiles.find(f => f.path == this.playerInfo.path);
+                        this.openSingleFileMenu(currentFile);
+                    }
+                }
+            ]
+        });
+
+        menu.present();
+    }
+
+    public selectManyMenuMore(): void {
+        let multipleFileMenu = this.actionSheetCtrl.create({
+            buttons: [
+                {
+                    text: 'Delete',
+                    icon: 'trash',
+                    handler: () => {
+                        let selectedFiles = this.playlistFiles.filter(f => f.selected);
+                        this.deleteFiles(selectedFiles);
+                    }
+                }, {
+                    text: 'Remove From Playlist',
+                    icon: 'close',
+                    handler: () => {
+                        let selectedFiles = this.playlistFiles.filter(f => f.selected);
+                        this.removeMultipleFromPlaylist(selectedFiles);
+                    }
+                }, {
+                    text: 'Edit Mp3 Tags',
+                    icon: 'pricetag',
+                    handler: () => {
+                        console.log('Destructive clicked');
+                    }
+                }
+            ]
+        });
+
+        multipleFileMenu.present();
+    }
+
+    public selectManyMenuBack(): void {
+        for (let i = 0; i < this.playlistFiles.length; i++) {
+            this.playlistFiles[i].selected = false;
         }
 
-        this.audioApi.playFile(file);
+        this.selectMany = false;
     }
 
     private showToast(message: string): void {

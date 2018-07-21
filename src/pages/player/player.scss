@@ -33,10 +33,14 @@
     padding: 0;
 }
 
-.current-item{
+.current-item {
     background-color: color($colors, primary);
 }
 
-.popover-content{
-    width:20% !important;
+.selected-item {
+    background-color: color($colors, secondary);
+}
+
+.popover-content {
+    width: 20% !important;
 }

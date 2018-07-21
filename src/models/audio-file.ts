@@ -7,4 +7,6 @@ export interface AudioFile {
     title: string;
     duration: string;
     queueId: number;
+
+    selected: boolean;
 }

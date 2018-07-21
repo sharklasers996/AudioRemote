@@ -1,8 +1,16 @@
 <ion-content padding>
+    <ion-fab bottom right *ngIf="selectMany">
+        <button ion-fab mini (click)="selectManyMenuMore()">
+            <ion-icon name="more"></ion-icon>
+        </button>
+        <button ion-fab mini color="danger" (click)="selectManyMenuBack()">
+            <ion-icon name="arrow-round-back"></ion-icon>
+        </button>
+    </ion-fab>
 
     <ion-list no-lines [virtualScroll]="playlistFiles">
 
-        <button *virtualItem="let file" ion-item color="background" [ngClass]="{ 'current-item' : playerInfo?.path == file.path }"
+        <button *virtualItem="let file" ion-item color="background" [ngClass]="{ 'current-item' : playerInfo?.path == file.path, 'selected-item' : file.selected }"
             ion-long-press [interval]="400" (onPressStart)="playlistFileLongClick(file, $event)" (click)="playlistFileClick(file)">
             <ion-grid class="playlist-item">
                 <ion-row>
@@ -44,8 +52,8 @@
     <ion-grid text-center class="player-btn-grid">
         <ion-row class="player-btn-row">
             <ion-col col>
-                <button ion-button icon-only round>
-                    <ion-icon name="shuffle"></ion-icon>
+                <button (click)="openMenu()" ion-button icon-only round>
+                    <ion-icon name="menu"></ion-icon>
                 </button>
             </ion-col>
             <ion-col col>
