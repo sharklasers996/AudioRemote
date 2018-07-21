@@ -246,14 +246,14 @@ export class PlayerPage {
             buttons: [
                 {
                     text: 'Select Many',
-                    icon: 'add-circle',
+                    icon: 'checkmark-circle-outline',
                     handler: () => {
                         this.selectMany = true;
                     }
                 },
                 {
                     text: 'Current File',
-                    icon: 'trash',
+                    icon: 'musical-note',
                     handler: () => {
                         let currentFile = this.playlistFiles.find(f => f.path == this.playerInfo.path);
                         this.openSingleFileMenu(currentFile);
