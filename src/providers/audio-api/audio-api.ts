@@ -78,4 +78,19 @@ export class AudioApiProvider {
           files: files
         });
   }
+
+  public addPlaylist(name: string): Promise<any> {
+    return this.http
+      .post(
+        `${this.audioApiUrl}/AddPlaylist`,
+        {
+          value: name
+        }
+      );
+  }
+
+  public deletePlaylist(playlist: AudioPlaylist): Promise<any> {
+    return this.http
+      .post(`${this.audioApiUrl}/DeletePlaylist`, playlist);
+  }
 }
