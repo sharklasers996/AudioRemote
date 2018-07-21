@@ -44,12 +44,13 @@ export class PlayerPage {
                     && playerInfo.currentPlaylist) {
                     this.getCurrentPlaylistFiles();
                 }
-                else
+                else if (this.playerInfo.currentPlaylist.name != playerInfo.currentPlaylist.name) {
+                    this.getCurrentPlaylistFiles();
+                }
 
-                    if (this.playerInfo.currentPlaylist.name != playerInfo.currentPlaylist.name) {
-                        this.getCurrentPlaylistFiles();
-                    }
-
+                if (this.playerInfo.path !== playerInfo.path) {
+                    this.updatePlaylistWithQueueIds();
+                }
 
                 this.playerInfo = playerInfo;
             });
