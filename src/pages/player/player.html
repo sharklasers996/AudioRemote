@@ -1,7 +1,7 @@
 <ion-header>
     <ion-searchbar #searchbar *ngIf="searching" (ionInput)="searchInputChanged($event)"></ion-searchbar>
 </ion-header>
-<ion-content padding>
+<ion-content padding #content>
     <ion-fab bottom right *ngIf="selectMany">
         <button ion-fab mini (click)="selectManyMenuMore()">
             <ion-icon name="more"></ion-icon>
@@ -11,7 +11,13 @@
         </button>
     </ion-fab>
 
-    <ion-toolbar *ngIf="searching"></ion-toolbar>
+    <ion-fab bottom right *ngIf="searching">
+        <button ion-fab mini color="danger" (click)="toggleSearch()">
+            <ion-icon name="arrow-round-back"></ion-icon>
+        </button>
+    </ion-fab>
+
+
     <ion-list no-lines [virtualScroll]="displayedPlaylistFiles">
 
         <button *virtualItem="let file" ion-item color="background" [ngClass]="{ 'current-item' : playerInfo?.path == file.path, 'selected-item' : file.selected }"
@@ -35,7 +41,7 @@
 
 </ion-content>
 
-<ion-footer>
+<ion-footer *ngIf="!searching">
     <ion-range [(ngModel)]="playerInfo.currentPosition" min="0" max="{{playerInfo?.duration}}" pin="true" color="grey" pin="false"
         class="slider" (ionChange)="timeSliderChange($event)">
         <ion-icon range-left small name="volume-low"></ion-icon>

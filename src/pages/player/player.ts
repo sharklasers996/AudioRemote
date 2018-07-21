@@ -1,5 +1,5 @@
 import { Component, EventEmitter, ViewChild } from '@angular/core';
-import { NavController, ActionSheetController, ToastController, Searchbar } from 'ionic-angular';
+import { NavController, ActionSheetController, ToastController, Searchbar, Content } from 'ionic-angular';
 import { AudioApiProvider } from '../../providers/audio-api/audio-api';
 import { AudioFile } from '../../models/audio-file';
 import { AudioDataChangeServiceProvider } from '../../providers/audio-data-change-service/audio-data-change-service';
@@ -24,6 +24,8 @@ export class PlayerPage {
 
     @ViewChild('searchbar') searchBarElement: Searchbar;
     public searching: boolean = false;
+
+    @ViewChild('content') content: Content;
 
     constructor(
         public navCtrl: NavController,
@@ -306,6 +308,7 @@ export class PlayerPage {
 
         if (!this.searching) {
             this.displayedPlaylistFiles = this.playlistFiles;
+            this.content.resize();
         } else {
             setTimeout(() => {
                 if (!this.searchBarElement) {
@@ -313,6 +316,9 @@ export class PlayerPage {
                 }
                 this.searchBarElement.setFocus();
             }, 300);
+
+            this.content.resize();
+            this.content.scrollToTop();
         }
     }
 
