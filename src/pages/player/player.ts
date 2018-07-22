@@ -1,5 +1,5 @@
 import { Component, EventEmitter, ViewChild } from '@angular/core';
-import { NavController, ActionSheetController, Searchbar, Content, LoadingController, AlertController } from 'ionic-angular';
+import { NavController, ActionSheetController, Searchbar, Content, LoadingController, AlertController, Platform } from 'ionic-angular';
 import { AudioApiProvider } from '../../providers/audio-api/audio-api';
 import { AudioFile } from '../../models/audio-file';
 import { AudioDataChangeServiceProvider } from '../../providers/audio-data-change-service/audio-data-change-service';
@@ -29,6 +29,8 @@ export class PlayerPage {
 
     @ViewChild('content') content: Content;
 
+    public deviceWidth: number;
+
     constructor(
         public navCtrl: NavController,
         private audioApi: AudioApiProvider,
@@ -37,6 +39,7 @@ export class PlayerPage {
         private actionSheetCtrl: ActionSheetController,
         private toaster: Toaster,
         private alertCtrl: AlertController,
+        private platform: Platform,
         loadingCtrl: LoadingController
     ) {
         this.audioApi.addLoadingController(loadingCtrl);
@@ -46,6 +49,8 @@ export class PlayerPage {
             .subscribe(() => {
                 this.getCurrentPlaylistFiles();
             });
+
+        this.deviceWidth = platform.width();
     }
 
     ionViewWillEnter() {

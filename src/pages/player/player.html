@@ -28,10 +28,13 @@
                         <ion-badge no-margin class="queue-badge" *ngIf="file.queueId" item-end>{{file.queueId}}</ion-badge>
                         {{ file.title }}
                     </ion-col>
-                    <ion-col col-sm-6 pull-sm-6 col-xs-12 text-right text-sm-left>
+                    <ion-col col-sm-3 pull-sm-6 col-xs-12 text-right text-sm-left>
                         <span class="artist">
                             {{ file.artist }}
                         </span>
+                    </ion-col>
+                    <ion-col col-sm-3 pull-sm-6 col-xs-12 text-left class="album" [hidden]="deviceWidth <= 768">
+                        {{file.album}}
                     </ion-col>
                 </ion-row>
             </ion-grid>
