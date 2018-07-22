@@ -147,4 +147,14 @@ export class AudioApiProvider {
         return count;
       });
   }
+
+  public changeMp3Tags(files: AudioFile[]): Promise<any> {
+    return this.http
+      .post(
+        `${this.audioApiUrl}/ChangeMp3Tags`,
+        {
+          value: files
+        }
+      );
+  }
 }

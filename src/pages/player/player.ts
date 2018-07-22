@@ -1,5 +1,5 @@
 import { Component, EventEmitter, ViewChild } from '@angular/core';
-import { NavController, ActionSheetController, Searchbar, Content, LoadingController } from 'ionic-angular';
+import { NavController, ActionSheetController, Searchbar, Content, LoadingController, AlertController } from 'ionic-angular';
 import { AudioApiProvider } from '../../providers/audio-api/audio-api';
 import { AudioFile } from '../../models/audio-file';
 import { AudioDataChangeServiceProvider } from '../../providers/audio-data-change-service/audio-data-change-service';
@@ -36,6 +36,7 @@ export class PlayerPage {
         private commandQueueApi: CommandQueueApiProvider,
         private actionSheetCtrl: ActionSheetController,
         private toaster: Toaster,
+        private alertCtrl: AlertController,
         loadingCtrl: LoadingController
     ) {
         this.audioApi.addLoadingController(loadingCtrl);
@@ -163,7 +164,7 @@ export class PlayerPage {
                     text: 'Edit Mp3 Tag',
                     icon: 'pricetag',
                     handler: () => {
-                        console.log('Destructive clicked');
+                        this.showChangeMp3TagForSingleFileMenu(file);
                     }
                 }
             ]
@@ -327,7 +328,9 @@ export class PlayerPage {
                     text: 'Edit Mp3 Tags',
                     icon: 'pricetag',
                     handler: () => {
-                        console.log('Destructive clicked');
+                        let selectedFiles = this.getSelectedItemsAndHideMenu();
+                        selectedFiles.forEach(file => file.selected = false);
+                        this.showChangeMp3TagForMultipleFilesMenu(selectedFiles);
                     }
                 }
             ]
@@ -389,5 +392,70 @@ export class PlayerPage {
                 this.displayedPlaylistFiles.push(playlistFile);
             }
         }
+    }
+
+    public showChangeMp3TagForSingleFileMenu(file: AudioFile): void {
+        let prompt = this.alertCtrl.create({
+            title: 'Change Mp3 Tag',
+            subTitle: file.artist + ' - ' + file.title,
+            inputs: [
+                {
+                    name: 'artist',
+                    placeholder: 'Artist',
+                    value: file.artist
+                },
+                {
+                    name: 'title',
+                    placeholder: 'Title',
+                    value: file.title
+                }
+            ],
+            buttons: [
+                {
+                    text: 'Change',
+                    handler: data => {
+                        file.artist = data.artist;
+                        file.title = data.title;
+
+                        this.audioApi
+                            .changeMp3Tags([file])
+                            .then(() => {
+                                this.toaster.showToast('Mp3 Tag Changed');
+                            });
+                    }
+                }
+            ]
+        });
+        prompt.present();
+    }
+
+    public showChangeMp3TagForMultipleFilesMenu(files: AudioFile[]): void {
+        let prompt = this.alertCtrl.create({
+            title: 'Change Mp3 Tag',
+            inputs: [
+                {
+                    name: 'artist',
+                    placeholder: 'Artist',
+                    value: files.length > 0 ? files[0].artist : ''
+                }
+            ],
+            buttons: [
+                {
+                    text: 'Change',
+                    handler: data => {
+                        files.forEach(file => {
+                            file.artist = data.artist;
+                        });
+
+                        this.audioApi
+                            .changeMp3Tags(files)
+                            .then(() => {
+                                this.toaster.showToast('Mp3 Tag Changed');
+                            });
+                    }
+                }
+            ]
+        });
+        prompt.present();
     }
 }
