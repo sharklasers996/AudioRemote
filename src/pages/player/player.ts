@@ -241,18 +241,18 @@ export class PlayerPage {
         let menu = this.actionSheetCtrl.create({
             buttons: [
                 {
-                    text: 'Select Many',
-                    icon: 'checkmark-circle-outline',
-                    handler: () => {
-                        this.selectMany = true;
-                    }
-                },
-                {
                     text: 'Current File',
                     icon: 'musical-note',
                     handler: () => {
                         let currentFile = this.playlistFiles.find(f => f.path == this.playerInfo.path);
                         this.openSingleFileMenu(currentFile);
+                    }
+                },
+                {
+                    text: 'Select Many',
+                    icon: 'checkmark-circle-outline',
+                    handler: () => {
+                        this.selectMany = true;
                     }
                 },
                 {
