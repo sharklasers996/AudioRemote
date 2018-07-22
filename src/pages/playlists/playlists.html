@@ -3,8 +3,8 @@
         <button ion-fab mini (click)="showAddPlaylistMenu()">
             <ion-icon name="add"></ion-icon>
         </button>
-
     </ion-fab>
+
     <ion-list no-lines>
         <button ion-item color="background" [ngClass]="{ 'current-playlist' : playlist.name == currentPlaylist?.name }" *ngFor="let playlist of playlists"
             ion-long-press [interval]="400" (onPressStart)="playlistLongClick(playlist, $event)" (click)="playlistClicked(playlist)">
