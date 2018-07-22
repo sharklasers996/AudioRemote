@@ -1,5 +1,5 @@
 import { Component, EventEmitter, ViewChild } from '@angular/core';
-import { NavController, ActionSheetController, ToastController, Searchbar, Content, LoadingController } from 'ionic-angular';
+import { NavController, ActionSheetController, Searchbar, Content, LoadingController } from 'ionic-angular';
 import { AudioApiProvider } from '../../providers/audio-api/audio-api';
 import { AudioFile } from '../../models/audio-file';
 import { AudioDataChangeServiceProvider } from '../../providers/audio-data-change-service/audio-data-change-service';
@@ -7,6 +7,7 @@ import { AudioPlayerInfo } from '../../models/audio-player-info';
 import { CommandQueueApiProvider } from '../../providers/command-queue-api/command-queue-api';
 import { Commands } from '../../enums/commands.enum';
 import { AudioPlaylist } from '../../models/audio-playlist';
+import { Toaster } from '../../utils/toaster';
 
 @Component({
     selector: 'page-player',
@@ -23,7 +24,6 @@ export class PlayerPage {
 
     public selectMany: boolean = false;
 
-
     @ViewChild('searchbar') searchBarElement: Searchbar;
     public searching: boolean = false;
 
@@ -35,21 +35,15 @@ export class PlayerPage {
         private audioDataChangeService: AudioDataChangeServiceProvider,
         private commandQueueApi: CommandQueueApiProvider,
         private actionSheetCtrl: ActionSheetController,
-        private toastCtrl: ToastController,
+        private toaster: Toaster,
         loadingCtrl: LoadingController
     ) {
         this.audioApi.addLoadingController(loadingCtrl);
 
         this.audioDataChangeService
-            .playlistChanged
-            .subscribe((playlist: AudioPlaylist) => {
-                if (!playlist || playlist.name == this.playerInfo.currentPlaylist.name) {
-                    this.audioApi
-                        .setPlaylist(playlist)
-                        .then(() => {
-                            this.getCurrentPlaylistFiles();
-                        });
-                }
+            .playlistFilesChanged
+            .subscribe(() => {
+                this.getCurrentPlaylistFiles();
             });
     }
 
@@ -57,11 +51,8 @@ export class PlayerPage {
         this.playerInfoChangedEvent = this.audioDataChangeService
             .audioPlayerInfoChanged
             .subscribe((playerInfo: AudioPlayerInfo) => {
-                if (!this.playerInfo.currentPlaylist
-                    && playerInfo.currentPlaylist) {
-                    this.getCurrentPlaylistFiles();
-                }
-                else if (this.playerInfo.currentPlaylist.name != playerInfo.currentPlaylist.name) {
+                if ((!this.playerInfo.currentPlaylist && playerInfo.currentPlaylist)
+                    || this.playerInfo.currentPlaylist.name != playerInfo.currentPlaylist.name) {
                     this.getCurrentPlaylistFiles();
                 }
 
@@ -100,7 +91,9 @@ export class PlayerPage {
     }
 
     public volumeSliderChange(event: any): void {
-        this.commandQueueApi.addCommand(Commands.ChangeVolume, event._valA);
+        if (event._pressed) {
+            this.commandQueueApi.addCommand(Commands.ChangeVolume, event._valA);
+        }
     }
 
     public timeSliderChange(event: any): void {
@@ -152,13 +145,19 @@ export class PlayerPage {
                     text: 'Delete',
                     icon: 'trash',
                     handler: () => {
-                        this.deleteFile(file);
+                        this.deleteFiles([file])
+                            .then(() => {
+                                this.toaster.showToast(`Deleted '${file.title}'`);
+                            });
                     }
                 }, {
                     text: 'Remove From Playlist',
                     icon: 'close',
                     handler: () => {
-                        this.removeFromPlaylist(file);
+                        this.removeFromPlaylist([file])
+                            .then(() => {
+                                this.toaster.showToast(`Removed '${file.title}'`);
+                            });
                     }
                 }, {
                     text: 'Edit Mp3 Tag',
@@ -207,52 +206,35 @@ export class PlayerPage {
             });
     }
 
-    private deleteFile(file: AudioFile): void {
-        this.audioApi
-            .deleteFiles([file])
-            .then(() => {
-                this.playlistFiles = this.playlistFiles.filter(f => f.path !== file.path);
-                this.displayedPlaylistFiles = this.displayedPlaylistFiles.filter(f => f.path !== file.path);
-                this.showToast(`Deleted '${file.title}'`);
-            });
+    private deleteFiles(files: AudioFile[]): Promise<any> {
+        return new Promise(resolve => {
+            this.audioApi
+                .deleteFiles(files)
+                .then(() => {
+                    this.removeItemsFromPlaylistArrays(files);
+                    resolve();
+                });
+        });
     }
 
-    private deleteFiles(files: AudioFile[]): void {
-        this.audioApi
-            .deleteFiles(files)
-            .then(() => {
-                this.playlistFiles = this.playlistFiles.filter(f => {
-                    return files.indexOf(f) === -1;
+    private removeFromPlaylist(files: AudioFile[]): Promise<any> {
+        return new Promise(resolve => {
+            this.audioApi
+                .removeFileFromPlaylist(files, this.playerInfo.currentPlaylist)
+                .then(() => {
+                    this.removeItemsFromPlaylistArrays(files);
+                    resolve();
                 });
-                this.displayedPlaylistFiles = this.displayedPlaylistFiles.filter(f => {
-                    return files.indexOf(f) === -1;
-                });
-                this.showToast(`Deleted ${files.length} files`);
-            });
+        });
     }
 
-    private removeFromPlaylist(file: AudioFile): void {
-        this.audioApi
-            .removeFileFromPlaylist([file], this.playerInfo.currentPlaylist)
-            .then(() => {
-                this.playlistFiles = this.playlistFiles.filter(f => f.path !== file.path);
-                this.displayedPlaylistFiles = this.displayedPlaylistFiles.filter(f => f.path !== file.path);
-                this.showToast(`Removed '${file.title}'`);
-            });
-    }
-
-    private removeMultipleFromPlaylist(files: AudioFile[]): void {
-        this.audioApi
-            .removeFileFromPlaylist(files, this.playerInfo.currentPlaylist)
-            .then(() => {
-                this.playlistFiles = this.playlistFiles.filter(f => {
-                    return files.indexOf(f) === -1;
-                });
-                this.displayedPlaylistFiles = this.displayedPlaylistFiles.filter(f => {
-                    return files.indexOf(f) === -1;
-                });
-                this.showToast(`Removed ${files.length} files`);
-            });
+    private removeItemsFromPlaylistArrays(files: AudioFile[]): void {
+        this.playlistFiles = this.playlistFiles.filter(f => {
+            return files.indexOf(f) === -1;
+        });
+        this.displayedPlaylistFiles = this.displayedPlaylistFiles.filter(f => {
+            return files.indexOf(f) === -1;
+        });
     }
 
     public openMenu(): void {
@@ -287,14 +269,20 @@ export class PlayerPage {
                     icon: 'trash',
                     handler: () => {
                         let selectedFiles = this.getSelectedItemsAndHideMenu();
-                        this.deleteFiles(selectedFiles);
+                        this.deleteFiles(selectedFiles)
+                            .then(() => {
+                                this.toaster.showToast(`Deleted ${selectedFiles.length} files`);
+                            });
                     }
                 }, {
                     text: 'Remove From Playlist',
                     icon: 'close',
                     handler: () => {
                         let selectedFiles = this.getSelectedItemsAndHideMenu();
-                        this.removeMultipleFromPlaylist(selectedFiles);
+                        this.removeFromPlaylist(selectedFiles)
+                            .then(() => {
+                                this.toaster.showToast(`Removed ${selectedFiles.length} files`);
+                            });
                     }
                 }, {
                     text: 'Edit Mp3 Tags',
@@ -309,17 +297,17 @@ export class PlayerPage {
         multipleFileMenu.present();
     }
 
-    private getSelectedItemsAndHideMenu(): AudioFile[] {
-        this.selectMany = false;
-        return this.displayedPlaylistFiles.filter(f => f.selected);
-    }
-
     public selectManyMenuBack(): void {
         for (let i = 0; i < this.displayedPlaylistFiles.length; i++) {
             this.displayedPlaylistFiles[i].selected = false;
         }
 
         this.selectMany = false;
+    }
+
+    private getSelectedItemsAndHideMenu(): AudioFile[] {
+        this.selectMany = false;
+        return this.displayedPlaylistFiles.filter(f => f.selected);
     }
 
     public toggleSearch(): void {
@@ -362,15 +350,5 @@ export class PlayerPage {
                 this.displayedPlaylistFiles.push(playlistFile);
             }
         }
-    }
-
-    private showToast(message: string): void {
-        let toast = this.toastCtrl.create({
-            message: message,
-            duration: 2000,
-            position: 'top'
-        });
-
-        toast.present();
     }
 }

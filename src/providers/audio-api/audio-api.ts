@@ -88,7 +88,7 @@ export class AudioApiProvider {
           playlist: playlist,
           files: files,
           directories: directories
-        });
+        }, 'Adding');
   }
 
   public removeFileFromPlaylist(files: AudioFile[], playlist: AudioPlaylist): Promise<any> {

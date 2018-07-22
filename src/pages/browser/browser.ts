@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { NavController, LoadingController, Select, ActionSheetController, ToastController } from 'ionic-angular';
+import { NavController, LoadingController, Select, ActionSheetController, Platform } from 'ionic-angular';
 import { FileBrowserApiProvider } from '../../providers/file-browser-api/file-browser-api';
 import { AudioApiProvider } from '../../providers/audio-api/audio-api';
 import { DirectoryListing } from '../../models/directory-listing';
@@ -7,6 +7,7 @@ import { AudioPlaylist } from '../../models/audio-playlist';
 import { MediaDirectory } from '../../models/media-directory';
 import { MediaFile } from '../../models/media-file';
 import { AudioDataChangeServiceProvider } from '../../providers/audio-data-change-service/audio-data-change-service';
+import { Toaster } from '../../utils/toaster';
 
 @Component({
     selector: 'page-browser',
@@ -31,10 +32,15 @@ export class BrowserPage {
         private fileBrowserApi: FileBrowserApiProvider,
         private audioApi: AudioApiProvider,
         private actionSheetCtrl: ActionSheetController,
-        private toastCtrl: ToastController,
+        private toaster: Toaster,
         private audioDataChangeService: AudioDataChangeServiceProvider,
+        private platform: Platform,
         loadingCtrl: LoadingController) {
         this.fileBrowserApi.addLoadingController(loadingCtrl);
+
+        platform.registerBackButtonAction(() => {
+            console.log("backPressed 1");
+        }, 1);
     }
 
     ionViewDidLoad() {
@@ -142,16 +148,15 @@ export class BrowserPage {
         }
 
         this.addSelectionToPlaylist();
-
     }
 
     public addSelectionToPlaylist() {
         this.audioApi
             .addFilesToPlaylist(this.selectedFiles, this.selectedDirectories, this.selectedPlaylist)
             .then(() => {
-                this.audioDataChangeService.onPlaylistChanged(this.selectedPlaylist);
+                this.audioDataChangeService.onPlaylistFilesChanged();
 
-                this.showToast(`Added to '${this.selectedPlaylist.name}'`);
+                this.toaster.showToast(`Added to '${this.selectedPlaylist.name}'`);
                 this.getPlaylists();
                 this.resetSelection();
             });
@@ -161,9 +166,9 @@ export class BrowserPage {
         this.audioApi
             .deleteMediaFiles(this.selectedFiles, this.selectedDirectories)
             .then(() => {
-                this.audioDataChangeService.onPlaylistChanged();
+                this.audioDataChangeService.onPlaylistFilesChanged();
                 this.browseLocation(this.directoryListing.directory);
-                this.showToast('Deleted files');
+                this.toaster.showToast('Deleted files');
             });
         this.resetSelection();
     }
@@ -184,15 +189,5 @@ export class BrowserPage {
         if (!this.selectMany) {
             this.resetSelection();
         }
-    }
-
-    private showToast(message: string): void {
-        let toast = this.toastCtrl.create({
-            message: message,
-            duration: 2000,
-            position: 'top'
-        });
-
-        toast.present();
     }
 }

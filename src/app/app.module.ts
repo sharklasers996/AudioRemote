@@ -18,6 +18,7 @@ import { HttpClientWithLoader } from '../utils/http-client-with-loader';
 import { AudioDataChangeServiceProvider } from '../providers/audio-data-change-service/audio-data-change-service';
 import { CommandQueueApiProvider } from '../providers/command-queue-api/command-queue-api';
 import { FileBrowserApiProvider } from '../providers/file-browser-api/file-browser-api';
+import { Toaster } from '../utils/toaster';
 
 
 @NgModule({
@@ -47,11 +48,12 @@ import { FileBrowserApiProvider } from '../providers/file-browser-api/file-brows
         SplashScreen,
         { provide: ErrorHandler, useClass: IonicErrorHandler },
         HttpClientWithLoader,
+        Toaster,
         SettingsApiProvider,
         AudioApiProvider,
         AudioDataChangeServiceProvider,
         CommandQueueApiProvider,
-    FileBrowserApiProvider
+        FileBrowserApiProvider
     ]
 })
 export class AppModule { }

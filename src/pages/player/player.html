@@ -54,8 +54,8 @@
             <ion-col col-3 text-right>{{playerInfo?.currentPositionString}}/{{playerInfo?.durationString}}</ion-col>
         </ion-row>
         <ion-row>
-            <ion-col col-9>{{playerInfo?.track}}</ion-col>
-            <ion-col col-3 text-right>{{playerInfo?.currentPlaylist?.name}}</ion-col>
+            <ion-col col-8>{{playerInfo?.track}}</ion-col>
+            <ion-col col-4 text-right>{{playerInfo?.currentPlaylist?.name}}</ion-col>
         </ion-row>
     </ion-grid>
 
@@ -89,11 +89,6 @@
             </ion-col>
         </ion-row>
     </ion-grid>
-
-
-
-
-
 
     <ion-range [(ngModel)]="playerInfo.volume" min="0" max="15" pin="false" color="primary" class="slider" (ionChange)="volumeSliderChange($event)">
         <ion-icon range-left small name="volume-low"></ion-icon>

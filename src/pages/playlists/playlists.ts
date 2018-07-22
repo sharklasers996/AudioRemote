@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
-import { NavController, AlertController, ToastController, ActionSheetController, LoadingController } from 'ionic-angular';
+import { NavController, AlertController, ActionSheetController, LoadingController } from 'ionic-angular';
 import { AudioPlaylist } from '../../models/audio-playlist';
 import { AudioApiProvider } from '../../providers/audio-api/audio-api';
 import { AudioPlayerInfo } from '../../models/audio-player-info';
+import { Toaster } from '../../utils/toaster';
 
 @Component({
     selector: 'page-playlists',
@@ -16,7 +17,7 @@ export class PlaylistsPage {
         public navCtrl: NavController,
         private audioApi: AudioApiProvider,
         private alertCtrl: AlertController,
-        private toastCtrl: ToastController,
+        private toaster: Toaster,
         private actionSheetCtrl: ActionSheetController,
         loadingCtrl: LoadingController) {
         this.audioApi.addLoadingController(loadingCtrl);
@@ -82,7 +83,7 @@ export class PlaylistsPage {
                             .addPlaylist(data.playlistName)
                             .then(() => {
                                 this.getPlaylists();
-                                this.showToast(`Added '${data.playlistName}' playlist`);
+                                this.toaster.showToast(`Added '${data.playlistName}' playlist`);
                             });
                     }
                 }
@@ -96,17 +97,7 @@ export class PlaylistsPage {
             .deletePlaylist(playlist)
             .then(() => {
                 this.getPlaylists();
-                this.showToast(`Deleted '${playlist.name}' playlist`);
+                this.toaster.showToast(`Deleted '${playlist.name}' playlist`);
             });
-    }
-
-    private showToast(message: string): void {
-        let toast = this.toastCtrl.create({
-            message: message,
-            duration: 2000,
-            position: 'top'
-        });
-
-        toast.present();
     }
 }

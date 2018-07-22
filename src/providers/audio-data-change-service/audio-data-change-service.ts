@@ -6,7 +6,7 @@ import { AudioPlayerInfo } from '../../models/audio-player-info';
 @Injectable()
 export class AudioDataChangeServiceProvider {
   @Output()
-  public playlistChanged: EventEmitter<AudioPlaylist> = new EventEmitter();
+  public playlistFilesChanged: EventEmitter<any> = new EventEmitter();
 
   @Output()
   public audioPlayerInfoChanged: EventEmitter<AudioPlayerInfo> = new EventEmitter();
@@ -15,8 +15,8 @@ export class AudioDataChangeServiceProvider {
     this.monitorAudioPlayerInfo();
   }
 
-  public onPlaylistChanged(playlist?: AudioPlaylist): void {
-    this.playlistChanged.emit(playlist);
+  public onPlaylistFilesChanged(): void {
+    this.playlistFilesChanged.emit();
   }
 
   private monitorAudioPlayerInfo(): void {
