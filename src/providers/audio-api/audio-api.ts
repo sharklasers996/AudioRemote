@@ -133,7 +133,11 @@ export class AudioApiProvider {
 
   public setPlaylistComboSongCount(count: number): Promise<void> {
     return this.http
-      .post(`${this.audioApiUrl}/SetPlaylistComboSongCount`, count);
+      .post(
+        `${this.audioApiUrl}/SetPlaylistComboSongCount`,
+        {
+          value: count
+        });
   }
 
   public getPlaylistComboSongCount(): Promise<number> {

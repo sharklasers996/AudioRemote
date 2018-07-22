@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { NavController, AlertController, ActionSheetController, LoadingController } from 'ionic-angular';
+import { Component, ViewChild } from '@angular/core';
+import { NavController, AlertController, ActionSheetController, LoadingController, FabContainer } from 'ionic-angular';
 import { AudioPlaylist } from '../../models/audio-playlist';
 import { AudioApiProvider } from '../../providers/audio-api/audio-api';
 import { AudioPlayerInfo } from '../../models/audio-player-info';
@@ -13,6 +13,13 @@ export class PlaylistsPage {
     public playlists: AudioPlaylist[];
     public currentPlaylist: AudioPlaylist;
 
+    public playlistComboEditing: boolean = false;
+    private lastToggleForSetAllInComboPlaylist: boolean = false;
+
+    public songCountPerPlaylistInCombo: number;
+
+    @ViewChild('playlistComboFab') playlistComboFab: FabContainer;
+
     constructor(
         public navCtrl: NavController,
         private audioApi: AudioApiProvider,
@@ -25,6 +32,7 @@ export class PlaylistsPage {
 
     ionViewDidLoad() {
         this.getPlaylists();
+        this.getSongCountPerPlaylistInCombo()
     }
 
     private getPlaylists(): void {
@@ -41,7 +49,20 @@ export class PlaylistsPage {
             });
     }
 
+    private getSongCountPerPlaylistInCombo(): void {
+        this.audioApi
+            .getPlaylistComboSongCount()
+            .then((count: number) => {
+                this.songCountPerPlaylistInCombo = count;
+            })
+    }
+
     public playlistClicked(playlist: AudioPlaylist): void {
+        if (this.playlistComboEditing) {
+            playlist.inPlaylistCombo = !playlist.inPlaylistCombo;
+            return;
+        }
+
         this.currentPlaylist = playlist;
         this.audioApi.setPlaylist(playlist);
     }
@@ -99,5 +120,68 @@ export class PlaylistsPage {
                 this.getPlaylists();
                 this.toaster.showToast(`Deleted '${playlist.name}' playlist`);
             });
+    }
+
+    public togglePlaylistComboEditing(): void {
+        if (this.playlistComboEditing) {
+            this.savePlaylistCombo();
+            this.playlistComboEditing = false;
+            this.playlistComboFab.close();
+        }
+        else {
+            this.playlistComboEditing = true;
+        }
+    }
+
+    public closePlaylistComboFab(): void {
+        this.playlistComboEditing = false;
+        this.playlistComboFab.close();
+    }
+
+    public toggleSetAllInPlaylistCombo(): void {
+        this.lastToggleForSetAllInComboPlaylist = !this.lastToggleForSetAllInComboPlaylist;
+
+        this.playlists.forEach(playlist => {
+            playlist.inPlaylistCombo = this.lastToggleForSetAllInComboPlaylist;
+        });
+    }
+
+    public savePlaylistCombo(): void {
+        let playlistsInCombo = this.playlists.filter(playlist => playlist.inPlaylistCombo);
+
+        this.audioApi
+            .setPlaylistCombo(playlistsInCombo)
+            .then(() => {
+                this.toaster.showToast('Playlist Combo Saved');
+                this.closePlaylistComboFab();
+            });
+    }
+
+    public showChangeSongCountPerPlaylistInComboMenu(): void {
+        let prompt = this.alertCtrl.create({
+            title: 'Change Song Count',
+            subTitle: 'Current: ' + this.songCountPerPlaylistInCombo,
+            inputs: [
+                {
+                    name: 'count',
+                    placeholder: 'Count'
+                },
+            ],
+            buttons: [
+                {
+                    text: 'Change',
+                    handler: data => {
+                        this.songCountPerPlaylistInCombo = data.count;
+                        this.audioApi
+                            .setPlaylistComboSongCount(data.count)
+                            .then(() => {
+                                this.toaster.showToast(`Changed song count to ${data.count}`);
+                                this.closePlaylistComboFab();
+                            });
+                    }
+                }
+            ]
+        });
+        prompt.present();
     }
 }

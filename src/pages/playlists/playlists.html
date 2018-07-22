@@ -1,13 +1,27 @@
 <ion-content>
-    <ion-fab bottom right>
+    <ion-fab middle right>
         <button ion-fab mini (click)="showAddPlaylistMenu()">
             <ion-icon name="add"></ion-icon>
         </button>
     </ion-fab>
-
+    <ion-fab right bottom #playlistComboFab>
+        <button ion-fab mini (click)="togglePlaylistComboEditing()">
+            <ion-icon name="shuffle"></ion-icon>
+        </button>
+        <ion-fab-list side="left">
+            <button ion-fab (click)="showChangeSongCountPerPlaylistInComboMenu()">
+                <ion-icon name="musical-note"></ion-icon>
+            </button>
+            <button ion-fab (click)="toggleSetAllInPlaylistCombo()">
+                <ion-icon name="done-all"></ion-icon>
+            </button>
+        </ion-fab-list>
+    </ion-fab>
     <ion-list no-lines>
-        <button ion-item color="background" [ngClass]="{ 'current-playlist' : playlist.name == currentPlaylist?.name }" *ngFor="let playlist of playlists"
-            ion-long-press [interval]="400" (onPressStart)="playlistLongClick(playlist, $event)" (click)="playlistClicked(playlist)">
+        <button ion-item color="background" [ngClass]="{ 'current-playlist' : playlist.name == currentPlaylist?.name, 'in-playlist-combo' : playlist.inPlaylistCombo && playlistComboEditing }"
+            *ngFor="let playlist of playlists" ion-long-press [interval]="400" (onPressStart)="playlistLongClick(playlist, $event)"
+            (click)="playlistClicked(playlist)">
+            <ion-icon *ngIf="playlist.inPlaylistCombo && !playlistComboEditing" name="star"></ion-icon>
             {{ playlist.name }}
         </button>
     </ion-list>

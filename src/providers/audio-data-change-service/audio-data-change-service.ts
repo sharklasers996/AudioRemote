@@ -1,5 +1,4 @@
 import { Injectable, Output, EventEmitter } from '@angular/core';
-import { AudioPlaylist } from '../../models/audio-playlist';
 import { AudioApiProvider } from '../audio-api/audio-api';
 import { AudioPlayerInfo } from '../../models/audio-player-info';
 
