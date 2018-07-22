@@ -7,6 +7,7 @@ import { AudioPlayerInfo } from '../../models/audio-player-info';
 import { Environment } from '../../constants/environment';
 import { MediaDirectory } from '../../models/media-directory';
 import { MediaFile } from '../../models/media-file';
+import { PlayingOrder } from '../../enums/playing-order';
 
 @Injectable()
 export class AudioApiProvider {
@@ -25,6 +26,11 @@ export class AudioApiProvider {
       .then(playerInfo => {
         return playerInfo;
       });
+  }
+
+  public setPlayingOrder(order: PlayingOrder): Promise<any> {
+    return this.http
+      .post(`${this.audioApiUrl}/SetPlayingOrder`, order);
   }
 
   public getPlaylists(): Promise<AudioPlaylist[]> {

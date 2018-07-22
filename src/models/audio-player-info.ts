@@ -1,4 +1,5 @@
 import { AudioPlaylist } from "./audio-playlist";
+import { PlayingOrder } from "../enums/playing-order";
 
 export class AudioPlayerInfo {
     path: string;
@@ -6,7 +7,7 @@ export class AudioPlayerInfo {
     track: string;
     currentPosition: number;
     duration: number;
-    playingOrder: number;
+    playingOrder: PlayingOrder;
     currentPositionString: string = '00:00';
     durationString: string = '00:00';
     isPaused: boolean;

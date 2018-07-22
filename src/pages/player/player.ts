@@ -6,8 +6,8 @@ import { AudioDataChangeServiceProvider } from '../../providers/audio-data-chang
 import { AudioPlayerInfo } from '../../models/audio-player-info';
 import { CommandQueueApiProvider } from '../../providers/command-queue-api/command-queue-api';
 import { Commands } from '../../enums/commands.enum';
-import { AudioPlaylist } from '../../models/audio-playlist';
 import { Toaster } from '../../utils/toaster';
+import { PlayingOrder } from '../../enums/playing-order';
 
 @Component({
     selector: 'page-player',
@@ -254,11 +254,50 @@ export class PlayerPage {
                         let currentFile = this.playlistFiles.find(f => f.path == this.playerInfo.path);
                         this.openSingleFileMenu(currentFile);
                     }
+                },
+                {
+                    text: 'Set Playing Order',
+                    icon: 'reorder',
+                    handler: () => {
+                        this.openSetPlayingOrderMenu();
+                    }
                 }
             ]
         });
 
         menu.present();
+    }
+
+    private openSetPlayingOrderMenu(): void {
+        let setPlayingOrderMenu = this.actionSheetCtrl.create({
+            title: 'Current: ' + (this.playerInfo.playingOrder == PlayingOrder.Normal ? 'Normal' : 'Random'),
+            buttons: [
+                {
+                    text: 'Normal',
+                    icon: 'arrow-forward',
+                    handler: () => {
+                        this.audioApi
+                            .setPlayingOrder(PlayingOrder.Normal)
+                            .then(() => {
+                                this.toaster.showToast('Playing Order Set to Normal');
+                            });
+                    }
+                },
+                {
+                    text: 'Random',
+                    icon: 'shuffle',
+                    handler: () => {
+                        this.audioApi
+                            .setPlayingOrder(PlayingOrder.Random)
+                            .then(() => {
+                                this.toaster.showToast('Playing Order Set to Random');
+                            });
+                    }
+                }
+            ]
+        });
+
+        setPlayingOrderMenu.present();
     }
 
     public selectManyMenuMore(): void {
