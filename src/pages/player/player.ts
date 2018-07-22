@@ -392,6 +392,19 @@ export class PlayerPage {
                 this.displayedPlaylistFiles.push(playlistFile);
             }
         }
+
+        if (this.displayedPlaylistFiles.length == 0) {
+            for (let i = 0; i < this.playlistFiles.length; i++) {
+                let playlistFile = this.playlistFiles[i];
+                if (!playlistFile.artist) {
+                    continue;
+                }
+
+                if (playlistFile.artist.search(regex) !== -1) {
+                    this.displayedPlaylistFiles.push(playlistFile);
+                }
+            }
+        }
     }
 
     public showChangeMp3TagForSingleFileMenu(file: AudioFile): void {
