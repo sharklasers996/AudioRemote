@@ -121,4 +121,26 @@ export class AudioApiProvider {
     return this.http
       .post(`${this.audioApiUrl}/DeletePlaylist`, playlist);
   }
+
+  public setPlaylistCombo(playlists: AudioPlaylist[]): Promise<any> {
+    return this.http
+      .post(
+        `${this.audioApiUrl}/SetPlaylistCombo`,
+        {
+          value: playlists
+        });
+  }
+
+  public setPlaylistComboSongCount(count: number): Promise<void> {
+    return this.http
+      .post(`${this.audioApiUrl}/SetPlaylistComboSongCount`, count);
+  }
+
+  public getPlaylistComboSongCount(): Promise<number> {
+    return this.http
+      .get<number>(`${this.audioApiUrl}/GetPlaylistComboSongCount`)
+      .then((count: number) => {
+        return count;
+      });
+  }
 }
