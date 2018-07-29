@@ -37,6 +37,10 @@ export class PlaylistsPage {
         this.getSongCountPerPlaylistInCombo()
     }
 
+    ionViewWillEnter() {
+        this.haptic();
+    }
+
     private getPlaylists(): void {
         this.audioApi
             .getPlaylists()
@@ -93,6 +97,7 @@ export class PlaylistsPage {
     }
 
     public showAddPlaylistMenu(): void {
+        this.haptic();
         let prompt = this.alertCtrl.create({
             title: 'Add Playlist',
             inputs: [

@@ -56,6 +56,7 @@ export class PlayerPage {
     }
 
     ionViewWillEnter() {
+        this.haptic();
         this.playerInfoChangedEvent = this.audioDataChangeService
             .audioPlayerInfoChanged
             .subscribe((playerInfo: AudioPlayerInfo) => {
@@ -152,6 +153,7 @@ export class PlayerPage {
                     text: queueText,
                     icon: 'add-circle',
                     handler: () => {
+                        this.haptic();
                         this.addOrRemoveFromQueue(file);
                     }
                 },
@@ -159,6 +161,7 @@ export class PlayerPage {
                     text: 'Delete',
                     icon: 'trash',
                     handler: () => {
+                        this.haptic();
                         this.deleteFiles([file])
                             .then(() => {
                                 this.toaster.showToast(`Deleted '${file.title}'`);
@@ -168,6 +171,7 @@ export class PlayerPage {
                     text: 'Remove From Playlist',
                     icon: 'close',
                     handler: () => {
+                        this.haptic();
                         this.removeFromPlaylist([file])
                             .then(() => {
                                 this.toaster.showToast(`Removed '${file.title}'`);
@@ -177,6 +181,7 @@ export class PlayerPage {
                     text: 'Edit Mp3 Tag',
                     icon: 'pricetag',
                     handler: () => {
+                        this.haptic();
                         this.showChangeMp3TagForSingleFileMenu(file);
                     }
                 }

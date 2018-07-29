@@ -50,6 +50,7 @@ export class BrowserPage {
     }
 
     ionViewWillEnter() {
+        this.haptic();
         this.getPlaylists();
     }
 
@@ -122,6 +123,7 @@ export class BrowserPage {
     }
 
     public openMenu(): void {
+        this.haptic();
         let menu = this.actionSheetCtrl.create({
             buttons: [
                 {
