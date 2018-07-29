@@ -25,6 +25,8 @@ export class AudioDataChangeServiceProvider {
         this.audioPlayerInfoChanged.emit(audioPlayerInfo);
 
         setTimeout(() => { this.monitorAudioPlayerInfo(); }, 1000);
+      }).catch(error => {
+        setTimeout(() => { this.monitorAudioPlayerInfo(); }, 10000);
       });
   }
 }

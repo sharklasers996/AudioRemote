@@ -18,13 +18,15 @@ export class HttpClientWithLoader {
     public get<T>(url: string, loadingMessage: string = null): Promise<T> {
         let loader = this.CreateAndShowLoader(loadingMessage);
 
-        return new Promise<T>(resolve => {
+        return new Promise<T>((resolve, reject) => {
             this.http.get<T>(url).subscribe(result => {
                 if (loader) {
                     loader.dismiss();
                 }
 
                 resolve(result);
+            }, error => {
+                reject(error);
             });
         });
     }

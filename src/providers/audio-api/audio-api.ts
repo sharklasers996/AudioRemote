@@ -25,6 +25,8 @@ export class AudioApiProvider {
       .get<AudioPlayerInfo>(`${this.playerInfoTrackerApiUrl}/GetAudioPlayerInfo`)
       .then(playerInfo => {
         return playerInfo;
+      }, error => {
+        return error;
       });
   }
 
