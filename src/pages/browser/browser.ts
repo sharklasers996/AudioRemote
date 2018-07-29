@@ -8,6 +8,7 @@ import { MediaDirectory } from '../../models/media-directory';
 import { MediaFile } from '../../models/media-file';
 import { AudioDataChangeServiceProvider } from '../../providers/audio-data-change-service/audio-data-change-service';
 import { Toaster } from '../../utils/toaster';
+import { DeviceFeedback } from '@ionic-native/device-feedback';
 
 @Component({
     selector: 'page-browser',
@@ -35,6 +36,7 @@ export class BrowserPage {
         private toaster: Toaster,
         private audioDataChangeService: AudioDataChangeServiceProvider,
         private platform: Platform,
+        private deviceFeedback: DeviceFeedback,
         loadingCtrl: LoadingController) {
         this.fileBrowserApi.addLoadingController(loadingCtrl);
 
@@ -68,6 +70,7 @@ export class BrowserPage {
     }
 
     public directoryClick(directory: MediaDirectory): void {
+        this.haptic();
         if (this.selectMany) {
             directory.selected = !directory.selected;
 
@@ -83,6 +86,7 @@ export class BrowserPage {
 
     public fileClick(file: MediaFile): void {
         if (this.selectMany) {
+            this.haptic();
             file.selected = !file.selected;
 
             if (file.selected) {
@@ -101,6 +105,7 @@ export class BrowserPage {
         this.selectedFiles = [];
         this.selectedDirectories = [directory];
 
+        this.haptic();
         this.openMenu();
     }
 
@@ -112,6 +117,7 @@ export class BrowserPage {
         this.selectedFiles = [file];
         this.selectedDirectories = [];
 
+        this.haptic();
         this.openMenu();
     }
 
@@ -122,6 +128,7 @@ export class BrowserPage {
                     text: 'Add To Playlist',
                     icon: 'add',
                     handler: () => {
+                        this.haptic();
                         this.openAddToPlaylistMenu();
                     }
                 },
@@ -129,6 +136,7 @@ export class BrowserPage {
                     text: 'Delete',
                     icon: 'trash',
                     handler: () => {
+                        this.haptic();
                         this.deleteSelection();
                     }
                 }
@@ -184,10 +192,15 @@ export class BrowserPage {
     }
 
     public toggleSelectMany(): void {
+        this.haptic();
         this.selectMany = !this.selectMany;
 
         if (!this.selectMany) {
             this.resetSelection();
         }
+    }
+
+    private haptic(): void {
+        this.deviceFeedback.haptic(0);
     }
 }

@@ -19,6 +19,7 @@ import { AudioDataChangeServiceProvider } from '../providers/audio-data-change-s
 import { CommandQueueApiProvider } from '../providers/command-queue-api/command-queue-api';
 import { FileBrowserApiProvider } from '../providers/file-browser-api/file-browser-api';
 import { Toaster } from '../utils/toaster';
+import { DeviceFeedback } from '@ionic-native/device-feedback';
 
 
 @NgModule({
@@ -27,13 +28,14 @@ import { Toaster } from '../utils/toaster';
         PlayerPage,
         PlaylistsPage,
         BrowserPage,
-        TabsPage,
+        TabsPage
     ],
     imports: [
         BrowserModule,
         HttpClientModule,
         LongPressModule,
         IonicModule.forRoot(AppComponent)
+
     ],
     bootstrap: [IonicApp],
     entryComponents: [
@@ -53,7 +55,8 @@ import { Toaster } from '../utils/toaster';
         AudioApiProvider,
         AudioDataChangeServiceProvider,
         CommandQueueApiProvider,
-        FileBrowserApiProvider
+        FileBrowserApiProvider,
+        DeviceFeedback
     ]
 })
 export class AppModule { }

@@ -8,6 +8,7 @@ import { CommandQueueApiProvider } from '../../providers/command-queue-api/comma
 import { Commands } from '../../enums/commands.enum';
 import { Toaster } from '../../utils/toaster';
 import { PlayingOrder } from '../../enums/playing-order';
+import { DeviceFeedback } from '@ionic-native/device-feedback';
 
 @Component({
     selector: 'page-player',
@@ -40,6 +41,7 @@ export class PlayerPage {
         private toaster: Toaster,
         private alertCtrl: AlertController,
         private platform: Platform,
+        private deviceFeedback: DeviceFeedback,
         loadingCtrl: LoadingController
     ) {
         this.audioApi.addLoadingController(loadingCtrl);
@@ -85,14 +87,17 @@ export class PlayerPage {
     }
 
     public playPause(): void {
+        this.haptic();
         this.commandQueueApi.addCommand(Commands.PlayPause, null);
     }
 
     public nextFile(): void {
+        this.haptic();
         this.commandQueueApi.addCommand(Commands.NextFile, null);
     }
 
     public previousFile(): void {
+        this.haptic();
         this.commandQueueApi.addCommand(Commands.PreviousFile, null);
     }
 
@@ -110,6 +115,7 @@ export class PlayerPage {
 
     public playlistFileClick(file: AudioFile): void {
         if (this.selectMany) {
+            this.haptic();
             file.selected = !file.selected;
             return;
         }
@@ -119,6 +125,7 @@ export class PlayerPage {
             return;
         }
 
+        this.haptic();
         this.audioApi.playFile(file);
     }
 
@@ -129,6 +136,7 @@ export class PlayerPage {
 
         this.playlistFileLongClicked = true;
 
+        this.haptic();
         this.openSingleFileMenu(file);
     }
 
@@ -244,12 +252,14 @@ export class PlayerPage {
     }
 
     public openMenu(): void {
+        this.haptic();
         let menu = this.actionSheetCtrl.create({
             buttons: [
                 {
                     text: 'Current File',
                     icon: 'musical-note',
                     handler: () => {
+                        this.haptic();
                         let currentFile = this.playlistFiles.find(f => f.path == this.playerInfo.path);
                         this.openSingleFileMenu(currentFile);
                     }
@@ -258,6 +268,7 @@ export class PlayerPage {
                     text: 'Select Many',
                     icon: 'checkmark-circle-outline',
                     handler: () => {
+                        this.haptic();
                         this.selectMany = true;
                     }
                 },
@@ -265,6 +276,7 @@ export class PlayerPage {
                     text: 'Set Playing Order',
                     icon: 'reorder',
                     handler: () => {
+                        this.haptic();
                         this.openSetPlayingOrderMenu();
                     }
                 }
@@ -282,6 +294,7 @@ export class PlayerPage {
                     text: 'Normal',
                     icon: 'arrow-forward',
                     handler: () => {
+                        this.haptic();
                         this.audioApi
                             .setPlayingOrder(PlayingOrder.Normal)
                             .then(() => {
@@ -293,6 +306,7 @@ export class PlayerPage {
                     text: 'Random',
                     icon: 'shuffle',
                     handler: () => {
+                        this.haptic();
                         this.audioApi
                             .setPlayingOrder(PlayingOrder.Random)
                             .then(() => {
@@ -313,6 +327,7 @@ export class PlayerPage {
                     text: 'Delete',
                     icon: 'trash',
                     handler: () => {
+                        this.haptic();
                         let selectedFiles = this.getSelectedItemsAndHideMenu();
                         this.deleteFiles(selectedFiles)
                             .then(() => {
@@ -323,6 +338,7 @@ export class PlayerPage {
                     text: 'Remove From Playlist',
                     icon: 'close',
                     handler: () => {
+                        this.haptic();
                         let selectedFiles = this.getSelectedItemsAndHideMenu();
                         this.removeFromPlaylist(selectedFiles)
                             .then(() => {
@@ -333,6 +349,7 @@ export class PlayerPage {
                     text: 'Edit Mp3 Tags',
                     icon: 'pricetag',
                     handler: () => {
+                        this.haptic();
                         let selectedFiles = this.getSelectedItemsAndHideMenu();
                         selectedFiles.forEach(file => file.selected = false);
                         this.showChangeMp3TagForMultipleFilesMenu(selectedFiles);
@@ -358,6 +375,7 @@ export class PlayerPage {
     }
 
     public toggleSearch(): void {
+        this.haptic();
         this.searching = !this.searching;
 
         if (!this.searching) {
@@ -369,7 +387,7 @@ export class PlayerPage {
                     return;
                 }
                 this.searchBarElement.setFocus();
-            }, 300);
+            }, 500);
 
             this.content.resize();
             this.content.scrollToTop();
@@ -432,6 +450,7 @@ export class PlayerPage {
                 {
                     text: 'Change',
                     handler: data => {
+                        this.haptic();
                         file.artist = data.artist;
                         file.title = data.title;
 
@@ -461,6 +480,7 @@ export class PlayerPage {
                 {
                     text: 'Change',
                     handler: data => {
+                        this.haptic();
                         files.forEach(file => {
                             file.artist = data.artist;
                         });
@@ -475,5 +495,9 @@ export class PlayerPage {
             ]
         });
         prompt.present();
+    }
+
+    private haptic(): void {
+        this.deviceFeedback.haptic(0);
     }
 }
